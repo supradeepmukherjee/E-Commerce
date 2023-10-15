@@ -1,0 +1,153 @@
+.productsHeading {
+    margin: 2vmax auto;
+    margin-top: 5vmax;
+    width: 15vw;
+    border-bottom: 1px solid #0000002e;
+    padding: 2vmax;
+    color: #000000ad;
+    font: 500 2vmax 'Roboto';
+    text-align: center;
+}
+
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 5vmax;
+    margin-top: 11vh;
+    justify-content: center;
+}
+
+.paginationBox {
+    display: flex;
+    justify-content: center;
+    margin: 6vmax;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+.pgItem {
+    /* background-color: #fff; */
+    list-style: none;
+    border: 1px solid #0000002e;
+    padding: 1vmax 1.5vmax;
+    transition: all .2s;
+    cursor: pointer;
+}
+
+.pgItem:first-child {
+    border-radius: 5rem 0 0 5rem;
+}
+
+.pgItem:last-child {
+    border-radius: 0 5rem 5rem 0;
+}
+
+.pgLink {
+    text-decoration: none;
+    font: 300 1vmax 'Roboto';
+    color: #505050;
+    transition: all .3s;
+}
+
+.pgItem:hover {
+    background-color: #e7e7e7;
+}
+
+.pgItem:hover .pgLink {
+    color: #505050;
+}
+
+.pgItemActive {
+    background-color: #ff6347;
+}
+
+.pgLinkActive {
+    color: #fff;
+}
+
+.priceHeading {
+    position: relative;
+    bottom: 6vh;
+    left: 2vw;
+}
+
+.filterBox {
+    width: 10vmax;
+    position: absolute;
+    top: 10vmax;
+    right: 4.2vmax;
+}
+
+.categoryBox {
+    padding: 0;
+    position: relative;
+    bottom: 10vh;
+    right: 81vw;
+}
+
+.categoryLink {
+    list-style: none;
+    color: #00000099;
+    font: 400 1vmax 'Roboto';
+    margin: 0.4vmax;
+    cursor: pointer;
+    transition: all .5s;
+}
+
+.categoryLink:hover {
+    color: #ff6347;
+}
+
+.categoryHeading {
+    position: relative;
+    bottom: 10vh;
+    right: 81vw;
+}
+
+.filterBox>fieldset {
+    border: 1px solid #00000054;
+    position: relative;
+    bottom: 21vh;
+    left: 3vw;
+}
+
+@media screen and (max-width:600px) {
+    .filterBox {
+        width: 80vw;
+        margin: auto;
+    }
+
+    .pgLink {
+        font: 300 1.8vmax 'Roboto';
+    }
+
+    .priceHeading {
+        top: 2vh;
+        left: 30vw;
+    }
+
+    .categoryHeading {
+        bottom: -1vh;
+        right: 5vw;
+    }
+
+    .categoryBox {
+        bottom: 0;
+        right: 1vw;
+    }
+
+    .categoryLink {
+        font-size: .8rem;
+    }
+
+    .filterBox>fieldset {
+        width: 10vw;
+        position: relative;
+        left: 65vw;
+        bottom: 17vh;
+    }
+}

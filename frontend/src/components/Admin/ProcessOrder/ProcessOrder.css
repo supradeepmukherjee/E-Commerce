@@ -1,0 +1,32 @@
+.processOrder {
+    border-left: 1px solid rgba(0, 0, 0, .16);
+}
+
+.processOrderH1 {
+    font: 400 2vmax 'Roboto' !important;
+}
+
+.updateStatusBtn {
+    border: none;
+    background-color: #ff6347 !important;
+    color: #fff !important;
+    width: 100%;
+    font: 300 1vmax 'Roboto';
+    padding: 0.8vmax;
+    transition: all .2s;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: 0 2px 5px #00000038;
+}
+
+.updateStatusBtn:hover {
+    background-color: #b4422e;
+    cursor: pointer;
+}
+
+@media screen and (max-width:600px) {
+    .updateStatusBtn {
+        font: 300 1.9vmax 'Roboto';
+        padding: 1.8vmax;
+    }
+}

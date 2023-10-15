@@ -1,0 +1,10 @@
+.updateRole {
+    overflow-x: hidden;
+}
+
+.updateRoleForm {
+    width: 15vw;
+    position: relative;
+    right: 12vw;
+    top: 4.2vh;
+}

@@ -1,0 +1,51 @@
+.sidebar {
+    background-color: #fff;
+    padding: 3rem 1rem;
+    flex-direction: column;
+    display: flex;
+    border-right: .1rem solid rgba(0, 0, 0, .16);
+}
+
+.sidebar>a:first-child {
+    padding: 0;
+}
+
+.sidebar>a>img {
+    width: 100%;
+    transition: all .2s;
+}
+
+.sidebar a {
+    text-decoration: none;
+    transition: all .2s;
+    color: rgba(0, 0, 0, .5);
+    padding: 0.5rem 1rem;
+    font: 200 1rem 'Roboto';
+}
+
+.sidebar a:hover {
+    color: #ff6347;
+    transform: scale(1.05);
+}
+
+.sidebar a>p {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar a>p>svg {
+    margin-right: 0.5rem;
+}
+
+.MuiTreeItem-content {
+    background-color: #fff !important;
+}
+@media screen and (max-width:600px) {
+    .sidebar{
+        padding-top: 5rem;
+        padding-bottom: 0rem;
+    }
+    .sidebar>a>img{
+        width: 80vw;
+    }
+}

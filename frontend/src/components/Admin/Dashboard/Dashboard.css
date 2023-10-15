@@ -1,0 +1,105 @@
+.dashboard {
+    width: 100vw;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    z-index: 2;
+    margin-bottom: -15vmax;
+}
+
+.dashboardContainer {
+    border-left: 1px solid #00000026;
+    background-color: #fff;
+    padding: 3rem 0;
+}
+
+.dashboardContainer>h1 {
+    color: rgba(0, 0, 0, .75);
+    font: 300 2rem 'Roboto';
+    margin: auto;
+    padding: 1.5rem;
+    width: 50%;
+    text-align: center;
+}
+
+.dashboardSummary {
+    margin: 2rem 0;
+}
+
+.dashboardSummary>div {
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.dashboardSummary>div>p {
+    background-color: #4675dbed;
+    color: #fff;
+    width: 100%;
+    margin: 0.2rem;
+    padding: 1.5rem;
+    text-align: center;
+    font: 300 1.3rem 'Roboto';
+}
+
+.dashboardSummary2>a {
+    color: #000;
+    font: 300 2rem 'Roboto';
+    text-align: center;
+    background-color: #ffe7ae;
+    text-decoration: none;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    margin: 2rem;
+    height: 10vmax;
+    width: 10vmax;
+}
+
+.dashboardSummary2 p {
+    margin: 0;
+}
+
+.dashboardSummary2>a:first-child {
+    color: #fff;
+    background-color: #ff6e6e;
+}
+
+.dashboardSummary2>a:last-child {
+    color: #fff;
+    background-color: #333333;
+}
+
+.lineChart {
+    width: 80%;
+    margin: auto;
+}
+
+.doughnutChart {
+    width: 30vmax;
+    margin: auto;
+}
+
+@media screen and (max-width:600px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboardContainer {
+        border-left: none;
+        padding: 0;
+    }
+
+    .dashboardSummary>div>p {
+        margin: 0;
+    }
+
+    .dashboardSummary2>a {
+        padding: 0.5rem;
+        margin: 1rem;
+        font: 300 1rem 'Roboto';
+    }
+}

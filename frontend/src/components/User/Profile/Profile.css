@@ -1,0 +1,146 @@
+.profile {
+    display: flex;
+    width: 100vw;
+    top: 0;
+    max-width: 100%;
+    left: 0;
+    background-color: #fff;
+}
+
+.profile>div {
+    display: flex;
+    width: 100vw;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.profile>div:first-child>h1 {
+    color: #0000008e;
+    margin-bottom: 6vh;
+    font: 500 2.3vmax 'Roboto';
+}
+
+.profile>div:first-child>img {
+    width: 20vmax;
+    height: 20vmax;
+    border-radius: 100%;
+    transition: all .2s;
+}
+
+.profile>div:first-child>img:hover {
+    scale: 1.05;
+}
+
+.profile>div:first-child>a {
+    background-color: #ff6347;
+    font: 400 1.2vmax 'Roboto';
+    color: #fff;
+    width: 30%;
+    margin: 4vmax;
+    text-align: center;
+    transition: all .3s;
+    width: 30%;
+    padding: 0.5vmax;
+    text-decoration: none;
+    border-radius: 1rem;
+}
+
+.profile>div:first-child>a:hover {
+    background-color: #cc4e37;
+}
+
+.profile>div:last-child {
+    justify-content: space-evenly;
+    padding: 5vmax;
+    box-sizing: border-box;
+    align-items: flex-start;
+}
+
+.profile>div:last-child>div>h4 {
+    color: #000;
+    font: 400 1.2vmax 'Roboto';
+}
+
+.profile>div:last-child>div>p {
+    color: rgba(0, 0, 0, .42);
+    margin: 0.2vmax;
+    font: 500 1.2vmax 'Arial Black';
+}
+
+.profile>div:last-child>div:last-child {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8vh;
+    width: 60%;
+}
+
+.profile>div:last-child>div:last-child>a {
+    background-color: #444444;
+    padding: 0.5vmax;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    font: 400 1.2vmax 'Roboto';
+    transition: all .2s;
+    margin: 1vmax 0;
+    border-radius: .5rem;
+}
+
+.profile>div:last-child>div:last-child>a:hover {
+    background-color: #1e1e1e;
+}
+
+.profile button {
+    background-color: #ff6347;
+    font: 400 1.2vmax 'Roboto';
+    color: #fff;
+    width: 70%;
+    margin: 4vmax;
+    text-align: center;
+    transition: all .3s;
+    padding: 0.5vmax;
+    text-decoration: none;
+    border-radius: 1rem;
+}
+
+.profile button:hover{
+    background-color: #cc4e37;
+}
+
+@media screen and (max-width:600px) {
+    .profile {
+        flex-direction: column;
+    }
+
+    .profile>div:last-child>h1 {
+        font: 500 3.2vmax 'Roboto';
+        translate: 0 -2vmax;
+    }
+
+    .profile>div:first-child>a {
+        font: 400 1.7vmax 'Roboto';
+        padding: 1vmax;
+    }
+
+    .profile>div:last-child {
+        text-align: center;
+        align-items: center;
+    }
+
+    .profile>div:last-child>div>h4 {
+        font: 400 2.5vmax 'Roboto';
+    }
+
+    .profile>div:last-child>div>p {
+        font: 400 2vmax cursive;
+        margin: 0.5vmax 0;
+    }
+
+    .profile>div:last-child>div:last-child>a {
+        font: 400 1.8vmax 'Roboto';
+        padding: 1vmax;
+        margin: 2vmax 0;
+    }
+}

@@ -1,0 +1,25 @@
+.contact {
+    height: 100vh;
+    width: 100vw;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    position: fixed;
+    z-index: 5;
+}
+
+.contact>p {
+    margin: 5vmax;
+    font: 200 3vmax "Roboto";
+    display: flex;
+    align-items: center;
+    color: #00aa00;
+}
+
+.contact>p>svg {
+    font: 200 3vmax "Roboto";
+    margin-right: 2rem;
+}

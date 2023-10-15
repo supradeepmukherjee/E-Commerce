@@ -1,0 +1,61 @@
+.speedDial {
+    position: fixed;
+    right: 3vmax;
+    top: 3vmax;
+    z-index: 5;
+}
+
+.icon {
+    width: 9.1vh;
+    height: 9.1vh;
+    border-radius: 100%;
+}
+
+.header {
+    border-bottom: .1rem solid rgba(0, 0, 0, .16);
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.header>a {
+    width: 2vmax;
+    height: 2vmax;
+    margin: 1vmax 4vmax;
+}
+
+.header>a>svg {
+    font-size: 2vmax;
+    transition: all .5s;
+    color: rgba(0, 0, 0, .45);
+}
+
+.header>a>svg:hover {
+    color: black;
+    transform: scale(1.2);
+}
+
+@media screen and (max-width:600px) {
+    .speedDial {
+        z-index: 10;
+    }
+
+    .speedDial>button {
+        position: relative;
+        top: 5vh;
+    }
+
+    .header>a {
+        width: 8vw;
+        height: 8vw;
+    }
+
+    .header>a>svg {
+        font-size: 8vw;
+    }
+}

@@ -1,0 +1,52 @@
+.noReviews {
+    font: 400 1.2vmax 'Gill Sans';
+    text-align: center;
+    color: #0000008c;
+}
+
+.reviews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.reviewCard {
+    flex: none;
+    box-shadow: 0 0 5px #00000039;
+    border: 1px solid #38383822;
+    width: 24vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1vmax;
+    padding: 3vmax;
+}
+
+.reviewCard>img {
+    width: 5vmax;
+}
+
+.reviewCard>a {
+    text-decoration: none;
+}
+
+.reviewCard>a>p {
+    color: #000000d5;
+    font: 300 1vmax 'Roboto';
+}
+
+.reviewCardSpan {
+    color: #00000073;
+    font: 600 1vmax cursive;
+}
+
+@media screen and (max-width:600px) {
+    .reviewCard>p {
+        font: 600 3vw 'Roboto';
+    }
+
+    .reviewCardSpan {
+        font: 300 4.2vw cursive;
+        margin-top: 1vh;
+    }
+}

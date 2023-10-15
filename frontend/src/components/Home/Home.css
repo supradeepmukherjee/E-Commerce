@@ -1,0 +1,107 @@
+.banner {
+    background-image: url('../../images/cover.jfif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.banner>h1 {
+    margin: 5vmax;
+    font: 600 2.5vmax 'Roboto';
+    color: rgb(255, 172, 39);
+}
+
+.banner>p {
+    font: 300 1.4vmax 'Lucida Sans';
+}
+
+.banner button {
+    border: 1px solid #00000000;
+    width: 10vw;
+    cursor: pointer;
+    background-color: #ff6347;
+    font: 400 1.2vmax 'Roboto';
+    color: #fff;
+    margin: 4vmax;
+    text-align: center;
+    transition: all .3s;
+    padding: 0.5vmax;
+    text-decoration: dotted;
+    border-radius: 1rem;
+}
+
+.banner .MuiSvgIcon-root {
+    position: relative;
+    font-size: 1.2vw;
+    top: .3vh;
+}
+
+.banner button:hover {
+    border: 1px solid #0000ff;
+    background-color: #00000000;
+    color: #0000ff;
+}
+
+.homeHeading {
+    text-align: center;
+    font-family: 'Roboto';
+    font-size: 1.8vmax;
+    border-bottom: 1px solid #15151580;
+    width: 20vmax;
+    padding: 1vmax;
+    margin: 5vmax auto;
+    color: #000000b8;
+}
+
+.container {
+    display: flex;
+    margin: 2vmax auto;
+    width: 80vw;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.MuiAlert-icon>svg {
+    font-size: 5vh;
+}
+
+.btn {
+    background-color: #ff6347;
+    font: 400 1.2vmax 'Roboto';
+    color: #fff;
+    text-align: center;
+    display: block;
+    margin: auto;
+    transition: all .3s;
+    width: fit-content;
+    padding: 0.5vmax .63vmax;
+    text-decoration: none;
+    border-radius: 1rem;
+}
+
+@media screen and (max-width:600px) {
+    .banner>img {
+        width: 90vw;
+    }
+
+    .banner button {
+        display: none;
+    }
+
+    .banner .MuiSvgIcon-root {
+        position: relative;
+        font-size: 5vw;
+        top: 0;
+    }
+
+    .btn {
+        font: 400 1.5vmax 'Roboto';
+    }
+}
