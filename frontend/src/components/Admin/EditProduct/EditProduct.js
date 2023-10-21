@@ -15,6 +15,9 @@ import SideBar from '../SideBar/SideBar'
 import alert from '../../../alert'
 
 const EditProduct = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { productDetails: productDetail, error, loading: detailsLoading } = useSelector(state => state.productDetails)

@@ -14,8 +14,8 @@ const sendEmail = async ({ to, subject, text }) => {
         host: "sandbox.smtp.mailtrap.io",
         port: 2525,
         auth: {
-            user: "86e5bac0d3f4cb", //webdevformailing
-            pass: '90169f9ee21879' // webdev@mailing6
+            user: process.env.MAILTRAP_USER, //webdevformailing
+            pass: process.env.MAILTRAP_PASSWORD // webdev@mailing6
         },
     })
     await transporter.sendMail({ from: process.env.SMTP_MAIL, to, text, subject })

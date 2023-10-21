@@ -12,6 +12,9 @@ import SideBar from '../SideBar/SideBar'
 import './UpdateRole.css'
 
 const UpdateRole = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const { error, loading, user } = useSelector(state => state.user)
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -39,7 +42,7 @@ const UpdateRole = () => {
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="dashboard updateRole">
                     <SideBar />
-                    <div className="profile">
+                    <div className="profile profileAdmin">
                         <div className="">
                             <img src={user.chavi.url} alt={user.name} />
                         </div>

@@ -122,7 +122,7 @@
 @media screen and (max-width:600px) {
     .cart {
         padding: 0;
-        margin-top: 12vh;
+        margin-top: 20vh;
         min-height: 60vh;
     }
 

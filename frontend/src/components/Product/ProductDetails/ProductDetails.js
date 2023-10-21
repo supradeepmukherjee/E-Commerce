@@ -17,6 +17,9 @@ import './ProductDetails.css'
 import Error404 from '../../Error404/Error404'
 
 const ProductDetails = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, []);
   const dispatch = useDispatch()
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')

@@ -16,6 +16,9 @@ import alert from '../../../alert'
 import './NewProduct.css'
 
 const NewProduct = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const { loading, error } = useSelector(state => state.products)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')

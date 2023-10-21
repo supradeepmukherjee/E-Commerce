@@ -1,6 +1,6 @@
-import './Footer.css'
 import ps from '../../images/playstore.png'
 import as from '../../images/appstore.png'
+import './Footer.css'
 
 const Footer = () => {
   return (

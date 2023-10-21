@@ -13,6 +13,7 @@
 .sidebar>a>img {
     width: 100%;
     transition: all .2s;
+    margin-top: 5vh;
 }
 
 .sidebar a {

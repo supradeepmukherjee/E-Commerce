@@ -25,7 +25,7 @@ const CheckoutSteps = ({ activeStep }) => {
                 activeStep={activeStep}
                 style={{
                     boxSizing: 'border-box',
-                    marginTop: '2vh'
+                    marginTop: '20vh'
                 }}
             >
                 {steps.map((step, index) => {

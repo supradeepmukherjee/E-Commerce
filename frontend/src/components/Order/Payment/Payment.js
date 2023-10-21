@@ -20,6 +20,9 @@ import './Payment.css'
 import { newOrder } from '../../../Actions/Order'
 
 const Payment = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const dispatch = useDispatch()
     const stripe = useStripe()
     const elements = useElements()

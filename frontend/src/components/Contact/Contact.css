@@ -8,6 +8,7 @@
     justify-content: center;
     background-color: #fff;
     position: fixed;
+    top: 10vh;
     z-index: 5;
 }
 

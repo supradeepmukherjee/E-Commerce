@@ -116,9 +116,24 @@
 }
 
 @media screen and (max-width:600px) {
+    .products {
+        margin-top: 37vh;
+    }
+
+    .productsParent {
+        overflow-x: hidden;
+    }
+
+    .productsHeading {
+        border: none;
+        font: 500 3.2vmax 'Roboto';
+        width: unset;
+    }
+
     .filterBox {
         width: 80vw;
         margin: auto;
+        top: 20vh;
     }
 
     .pgLink {
@@ -126,8 +141,9 @@
     }
 
     .priceHeading {
+        display: flex;
+        justify-content: center;
         top: 2vh;
-        left: 30vw;
     }
 
     .categoryHeading {
@@ -138,6 +154,7 @@
     .categoryBox {
         bottom: 0;
         right: 1vw;
+        margin-top: 1vh;
     }
 
     .categoryLink {
@@ -145,6 +162,7 @@
     }
 
     .filterBox>fieldset {
+        border: none;
         width: 10vw;
         position: relative;
         left: 65vw;

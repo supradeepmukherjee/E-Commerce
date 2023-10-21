@@ -13,6 +13,9 @@ import './ProcessOrder.css'
 import AccountTree from '@mui/icons-material/AccountTree'
 
 const ProcessOrder = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { id } = useParams()

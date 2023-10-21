@@ -2,9 +2,28 @@
     overflow-x: hidden;
 }
 
+.profileAdmin {
+    position: relative;
+    top: 1vh;
+}
+
 .updateRoleForm {
     width: 15vw;
     position: relative;
     right: 12vw;
+    padding: 1vmax !important;
     top: 4.2vh;
+    margin-top: 0 !important;
+}
+
+.updateRoleForm>button {
+    margin: 1vmax;
+}
+@media screen and (max-width:600px) {
+    .updateRoleForm {
+        width: 50vw;
+        margin-left: auto;
+        margin-right: auto;
+        right: 0;
+    }
 }

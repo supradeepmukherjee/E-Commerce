@@ -26,7 +26,7 @@ const RegisterLogin = () => {
     name: '',
     email: '',
     password: '',
-    chavi: '/profile.png'
+    chavi: 'https://res.cloudinary.com/dsjluiazl/image/upload/v1697892418/EcomChavi/profile_i8jybt.png'
   })
   const navigate = useNavigate()
   const redirect = window.location.search ? `/${window.location.search.split('=')[1]}` : '/account'

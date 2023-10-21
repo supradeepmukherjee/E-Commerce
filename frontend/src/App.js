@@ -39,14 +39,11 @@ import About from './components/About/About';
 import Contact from './components/Contact/Contact';
 import Error404 from './components/Error404/Error404';
 
-// TODO
-// fix styles of all pages(including speedial and loader)
-// fit profile photo in header
-// deploy using --legacy-peer-deps (if required)
 function App() {
   const dispatch = useDispatch()
   const { isAuthenticated, user } = useSelector(state => state.user)
   const [key, setKey] = useState('')
+  const [tab, setTab] = useState('/')
   const [isAdmin, setIsAdmin] = useState(false)
   const getKey = async () => {
     const { data } = await axios.get('/api/v1/key')
@@ -62,8 +59,8 @@ function App() {
   }, [user])
   return (
     <Router>
-      <Header isAuthenticated={isAuthenticated} />
-      {isAuthenticated && <UserOptions user={user} />}
+      <Header change={tab} changeTab={setTab} isAuthenticated={isAuthenticated} />
+      {isAuthenticated && <UserOptions changeTab={setTab} user={user} />}
       <Routes>
         <Route exact path='/' element={<Home />} />
         <Route exact path='/product/:id' element={<ProductDetails />} />
@@ -107,4 +104,4 @@ function App() {
 }
 
 export default App;
-// cd "D:\webd\React Projects\Ecommerce 6PP\frontend"
+// ask others if they are facing font problem

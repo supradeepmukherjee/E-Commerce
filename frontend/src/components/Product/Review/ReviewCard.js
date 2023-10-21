@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { delReview, productDetails } from '../../../Actions/Product';
 
 const ReviewCard = ({ review, role, userID, productID }) => {
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const [open, setOpen] = useState(false)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')

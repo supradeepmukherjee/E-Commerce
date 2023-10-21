@@ -12,6 +12,9 @@ import './UserList.css'
 import { allUsers } from '../../../Actions/User'
 
 const UserList = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, []);
   const dispatch = useDispatch()
   const { loading, users, error } = useSelector(state => state.user)
   const [alertVisibility, setAlertVisibility] = useState('hidden')

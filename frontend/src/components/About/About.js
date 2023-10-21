@@ -1,12 +1,15 @@
+import { useEffect } from 'react'
 import { Avatar, Typography } from '@mui/material'
 import GitHub from '@mui/icons-material/GitHub'
 import LinkedIn from '@mui/icons-material/LinkedIn'
 import './About.css'
 
 const About = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     return (
         <div className='about'>
-            <div className="aboutGradient"></div>
             <div className="aboutContainer">
                 <Typography component={'h1'}>
                     About Us

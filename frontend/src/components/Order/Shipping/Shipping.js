@@ -17,6 +17,9 @@ import { getShipInfo, saveShipInfo } from '../../../Actions/User'
 import Loader from '../../Loader/Loader'
 
 const Shipping = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, []);
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { shipInfo, error, loading } = useSelector(state => state.ship)
@@ -63,7 +66,7 @@ const Shipping = () => {
       {loading ? <Loader /> : <>
         <MetaData title={`SHIPPING DETAILS`} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
-        <CheckoutSteps activeStep={2} />
+        <CheckoutSteps activeStep={0} />
         <div className="shipping">
           <div className="shippingBox">
             <h2 className="shippingHeading">

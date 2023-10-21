@@ -208,6 +208,7 @@
 
     .registerImg>img {
         width: 8vmax;
+        height: 8vmax;
         border-radius: 100vw;
     }
 

@@ -74,4 +74,8 @@
     .footer {
         margin-top: 18vmax;
     }
+    .midFooter>h1{
+        position: relative;
+        right: 3vw;
+    } 
 }

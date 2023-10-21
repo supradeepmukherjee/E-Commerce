@@ -178,6 +178,7 @@
 
 @media screen and (max-width:600px) {
     .productDetails {
+        margin-top: 10vh;
         flex-direction: column;
         height: unset;
     }

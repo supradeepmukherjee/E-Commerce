@@ -13,6 +13,9 @@ import { Link } from 'react-router-dom'
 import './MyOrders.css'
 
 const MyOrders = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const dispatch = useDispatch()
     const { error: userError, user, loading: userLoading } = useSelector(state => state.user)
     const { loading, error, orders } = useSelector(state => state.order)

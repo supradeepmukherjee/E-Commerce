@@ -20,6 +20,10 @@
     justify-content: center;
 }
 
+.errorContainer>h2 {
+    text-align: center;
+}
+
 .errorContainer>svg {
     font-size: 5vmax;
 }

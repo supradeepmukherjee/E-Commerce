@@ -13,6 +13,9 @@ import { Country, State } from "country-state-city";
 import './ConfirmOrder.css'
 
 const ConfirmOrder = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { error: userError, user, loading: userLoading } = useSelector(state => state.user)

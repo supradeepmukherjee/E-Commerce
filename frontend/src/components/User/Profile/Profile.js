@@ -9,17 +9,19 @@ import MetaData from '../../MetaData'
 import './Profile.css'
 
 const Profile = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, []);
   const { error, loading, user } = useSelector(state => state.user)
   const dispatch = useDispatch()
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
   const [alertType, setAlertType] = useState('')
-  
   useEffect(() => {
     dispatch(loadUser())
   }, [dispatch])
   useEffect(() => {
-    if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
+    if (error && error !== 'Please login first') alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
   }, [dispatch, error])
   return (
     <>
@@ -36,7 +38,7 @@ const Profile = () => {
               Edit Profile
             </Link>
           </div>
-          <div className="">
+          <div className="profileDetails">
             <div className="">
               <h4>
                 Full Name

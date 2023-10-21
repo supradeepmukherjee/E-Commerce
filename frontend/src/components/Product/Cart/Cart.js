@@ -13,6 +13,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import './Cart.css'
 
 const Cart = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, []);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { loading, error, cartItems } = useSelector(state => state.cartItems)

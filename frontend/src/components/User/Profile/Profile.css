@@ -1,7 +1,8 @@
 .profile {
     display: flex;
     width: 100vw;
-    top: 0;
+    position: relative;
+    top: 6vw;
     max-width: 100%;
     left: 0;
     background-color: #fff;
@@ -49,6 +50,11 @@
 
 .profile>div:first-child>a:hover {
     background-color: #cc4e37;
+}
+
+.profileDetails>div {
+    margin-top: 1vmax;
+    margin-bottom: 1vmax;
 }
 
 .profile>div:last-child {
@@ -105,13 +111,14 @@
     border-radius: 1rem;
 }
 
-.profile button:hover{
+.profile button:hover {
     background-color: #cc4e37;
 }
 
 @media screen and (max-width:600px) {
     .profile {
         flex-direction: column;
+        top: 0;
     }
 
     .profile>div:last-child>h1 {
@@ -134,7 +141,7 @@
     }
 
     .profile>div:last-child>div>p {
-        font: 400 2vmax cursive;
+        font: 400 4vmax cursive;
         margin: 0.5vmax 0;
     }
 

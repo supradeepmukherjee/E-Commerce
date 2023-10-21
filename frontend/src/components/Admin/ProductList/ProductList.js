@@ -15,6 +15,9 @@ import SideBar from '../SideBar/SideBar'
 import './ProductList.css'
 
 const ProductList = () => {
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, []);
     const dispatch = useDispatch() 
     const [open, setOpen] = useState(false)
     const [id, setId] = useState(null)

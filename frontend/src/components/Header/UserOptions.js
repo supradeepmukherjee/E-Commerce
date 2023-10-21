@@ -15,7 +15,7 @@ import Cart from '@mui/icons-material/ShoppingCart';
 import { Dialog, DialogActions, DialogTitle, Button } from "@mui/material";
 import './Header.css'
 
-const UserOptions = ({ user }) => {
+const UserOptions = ({ user, changeTab }) => {
     const [open, setOpen] = useState(false)
     const [boxOpen, setBoxOpen] = useState(false)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
@@ -25,10 +25,22 @@ const UserOptions = ({ user }) => {
     const itemsQty = useSelector(state => state.user.user.cartItems)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const dashboard = () => navigate('/dashboard')
-    const orders = () => navigate('/myorders')
-    const profile = () => navigate('/account')
-    const cart = () => navigate('/cart')
+    const dashboard = () => {
+        navigate('/dashboard')
+        changeTab('/account')
+    }
+    const orders = () => {
+        navigate('/myorders')
+        changeTab('/account')
+    }
+    const profile = () => {
+        navigate('/account')
+        changeTab('/account')
+    }
+    const cart = () => {
+        navigate('/cart')
+        changeTab('/account')
+    }
     const boxToggle = () => boxOpen ? setBoxOpen(false) : setBoxOpen(true)
     const submitHandler = async () => {
         await dispatch(logout())
