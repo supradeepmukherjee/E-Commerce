@@ -30,7 +30,6 @@
 }
 
 .pgItem {
-    /* background-color: #fff; */
     list-style: none;
     border: 1px solid #0000002e;
     padding: 1vmax 1.5vmax;
@@ -113,6 +112,7 @@
     position: relative;
     bottom: 21vh;
     left: 3vw;
+    padding: 1vmax;
 }
 
 @media screen and (max-width:600px) {
@@ -163,9 +163,10 @@
 
     .filterBox>fieldset {
         border: none;
-        width: 10vw;
+        width: 20vw;
         position: relative;
         left: 65vw;
         bottom: 17vh;
+        padding: 0;
     }
 }

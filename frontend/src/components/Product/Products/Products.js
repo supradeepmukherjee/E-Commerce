@@ -26,8 +26,11 @@ const Products = () => {
     const setCurrentPage = e => setCurrentPg(e)
     const priceHandler = (e, newPrice) => setPrice(newPrice)
     useEffect(() => {
-        dispatch(getProducts(keyword, currentPg, price, categoryOption, rating))
+        const wait = setTimeout(() => {
+            dispatch(getProducts(keyword, currentPg, price, categoryOption, rating))
+        }, 1200);
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        return () => clearTimeout(wait)
     }, [categoryOption, currentPg, dispatch, keyword, price, rating])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
@@ -69,7 +72,7 @@ const Products = () => {
                                 </li>
                             )}
                         </ul>
-                        <fieldset>
+                        <fieldset className='minRating'>
                             <Typography component='legend'>
                                 Min. Rating
                             </Typography>
