@@ -10,7 +10,9 @@ import { loadUser } from '../../../Actions/User'
 import EmptyCart from '@mui/icons-material/RemoveShoppingCart'
 import { Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
+import { useGetItemsQuery } from '../../../redux/api/cart'
 import './Cart.css'
+import useErrors from '../../../hooks/useErrors'
 
 const Cart = () => {
   useEffect(() => {
@@ -18,7 +20,6 @@ const Cart = () => {
   }, []);
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { loading, error, cartItems } = useSelector(state => state.cartItems)
   const itemsQty = useSelector(state => state.user.user.cartItems)
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
@@ -58,15 +59,14 @@ const Cart = () => {
     await dispatch(getItems())
     alert('success', setAlertType, 'Item removed from Cart', setAlertMsg, setAlertVisibility, dispatch)
   }
-  useEffect(() => {
-    dispatch(getItems())
-  }, [dispatch])
+  const { data, isLoading, isError, error } = useGetItemsQuery()
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
   }, [dispatch, error])
   return (
     <>
-      {loading ? <Loader /> : <>
+      {isLoading ? <Loader /> : <>
         <MetaData title={`CART`} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         {itemsQty.length < 1 ?

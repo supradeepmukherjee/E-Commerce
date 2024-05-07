@@ -10,25 +10,25 @@ import alert from '../../alert'
 import logo from '../../images/logo.png'
 import { Link } from 'react-router-dom';
 import './Home.css'
+import { useGetProductsQuery } from '../../redux/api/product';
+import useErrors from '../../hooks/useErrors';
 
 const Home = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const dispatch = useDispatch()
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
     const [alertType, setAlertType] = useState('')
-    const { loading, products, error } = useSelector(state => state.products)
-    useEffect(() => {
-        dispatch(getProducts())
-    }, [dispatch])
+    const { data, isError, error, isLoading } = useGetProductsQuery()
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error])
     return (
         <>
-            {loading ? <Loader /> : <>
+            {isLoading ? <Loader /> : <>
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <MetaData title={'ECOMMERCE'} />
                 <div className="banner">

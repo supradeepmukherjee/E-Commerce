@@ -10,6 +10,7 @@ import { Slider, Typography } from '@mui/material';
 import Alert from '../../Alert';
 import MetaData from '../../MetaData';
 import alert from '../../../alert';
+import { useLazyGetMyProductsQuery } from '../../../redux/api/product';
 
 const Products = () => {
     const categories = ['Laptop', 'Phone', 'Clothes', 'Shoes', 'Camera']
@@ -25,6 +26,7 @@ const Products = () => {
     const { loading, products, filteredProductsCount, productsCount, resultPerPg, error } = useSelector(state => state.products)
     const setCurrentPage = e => setCurrentPg(e)
     const priceHandler = (e, newPrice) => setPrice(newPrice)
+    const [getProducts] = useLazyGetMyProductsQuery()
     useEffect(() => {
         const wait = setTimeout(() => {
             dispatch(getProducts(keyword, currentPg, price, categoryOption, rating))

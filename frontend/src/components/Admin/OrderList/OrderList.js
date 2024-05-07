@@ -11,18 +11,20 @@ import Alert from '../../Alert'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import SideBar from '../SideBar/SideBar'
+import { useGetAdminOrdersQuery } from '../../../redux/api/order'
+import useErrors from '../../../hooks/useErrors'
 
 const OrderList = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
   const dispatch = useDispatch()
-  const { loading, orders, error } = useSelector(state => state.order)
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
   const [alertType, setAlertType] = useState('')
   const [open, setOpen] = useState(false)
   const [id, setId] = useState(null)
+  const { isError, isLoading, data, error } = useGetAdminOrdersQuery()
   const columns = [
     {
       field: 'id',
@@ -93,15 +95,13 @@ const OrderList = () => {
     dispatch(getOrders())
     setOpen(false)
   }
-  useEffect(() => {
-    dispatch(getOrders())
-  }, [dispatch])
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
   }, [dispatch, error])
   return (
     <>
-      {loading ? <Loader /> : <>
+      {isLoading ? <Loader /> : <>
         <MetaData title={"eCommerce"} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         <div className="dashboard">

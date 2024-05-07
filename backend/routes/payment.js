@@ -1,10 +1,10 @@
-const express = require('express')
-const { processPayment, apiKey } = require('../controllers/payment')
-const { isAuthenticated } = require('../middlewares/auth')
+import { Router } from 'express'
+import { processPayment, apiKey } from '../controllers/payment.js'
+import { isAuthenticated } from '../middlewares/auth.js'
 
-const router = express.Router()
+const app = Router()
 
-router.route('/processpayment').post(isAuthenticated, processPayment)
-router.route('/key').get(apiKey)
+app.post('/processpayment', isAuthenticated, processPayment)
+app.get('/key', apiKey)
 
-module.exports = router
+export default app

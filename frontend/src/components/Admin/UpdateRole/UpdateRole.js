@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { updateRole, viewUser } from '../../../Actions/User'
 import alert from '../../../alert'
+import useErrors from '../../../hooks/useErrors'
+import { useGetUserProfileQuery } from '../../../redux/api/user'
 import Alert from '../../Alert'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
@@ -13,9 +15,8 @@ import './UpdateRole.css'
 
 const UpdateRole = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
-    const { error, loading, user } = useSelector(state => state.user)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [alertVisibility, setAlertVisibility] = useState('hidden')
@@ -29,15 +30,14 @@ const UpdateRole = () => {
         await dispatch(updateRole(id, role))
         navigate('/adminusers')
     }
-    useEffect(() => {
-        dispatch(viewUser(id))
-    }, [dispatch, id])
+    const { isLoading, data, error, isError } = useGetUserProfileQuery(id)
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error])
     return (
         <>
-            {loading ? <Loader /> : <>
+            {isLoading ? <Loader /> : <>
                 <MetaData title={"eCommerce"} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="dashboard updateRole">

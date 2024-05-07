@@ -18,19 +18,20 @@ import { useNavigate } from 'react-router-dom'
 import { State } from "country-state-city";
 import './Payment.css'
 import { newOrder } from '../../../Actions/Order'
+import useErrors from '../../../hooks/useErrors'
+import { useGetMyOrdersQuery } from '../../../redux/api/order'
+import { useGetItemsQuery } from '../../../redux/api/cart'
+import { useGetShipInfoQuery } from '../../../redux/api/user'
 
 const Payment = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const dispatch = useDispatch()
     const stripe = useStripe()
     const elements = useElements()
     const navigate = useNavigate()
     const { error: userError, user, loading: userLoading } = useSelector(state => state.user)
-    const { loading, error, cartItems } = useSelector(state => state.cartItems)
-    const { shipInfo, error: shipError } = useSelector(state => state.ship)
-    const { error: orderError } = useSelector(state => state.order)
     const itemsQty = useSelector(state => state.user.user.cartItems)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
@@ -124,14 +125,17 @@ const Payment = () => {
         if (shipError) alert('error', setAlertType, shipError, setAlertMsg, setAlertVisibility, dispatch)
         if (orderError) alert('error', setAlertType, orderError, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error, orderError, shipError, userError])
-    useEffect(() => {
-        dispatch(loadUser())
-        dispatch(getItems())
-        dispatch(getShipInfo())
-    }, [dispatch])
+    const { isLoading, data, isError, error } = useGetMyOrdersQuery()
+    const { isLoading: itemsLoading, data: itemsData, isError: itemsIsError, error: itemsError } = useGetItemsQuery()
+    const { isError: shipIsError, isLoading: shipLoading, data: shipData, error: shipError } = useGetShipInfoQuery()
+    useErrors([
+        { error, isError },
+        { error: itemsError, isError: itemsIsError },
+        { error: shipError, isError: shipIsError },
+    ])
     return (
         <>
-            {loading || userLoading ? <Loader /> : <>
+            {isLoading || itemsLoading || shipLoading || userLoading ? <Loader /> : <>
                 <MetaData title={`PAYMENT`} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="steps">

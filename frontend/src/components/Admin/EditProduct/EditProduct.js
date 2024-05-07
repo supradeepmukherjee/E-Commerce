@@ -13,15 +13,15 @@ import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import SideBar from '../SideBar/SideBar'
 import alert from '../../../alert'
+import useErrors from '../../../hooks/useErrors'
+import { useProductDetailsQuery } from '../../../redux/api/product'
 
 const EditProduct = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { productDetails: productDetail, error, loading: detailsLoading } = useSelector(state => state.productDetails)
-    const { loading, error: productError } = useSelector(state => state.productDetails)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
     const [alertType, setAlertType] = useState('')
@@ -33,6 +33,7 @@ const EditProduct = () => {
     const [stock, setStock] = useState(null);
     const [images, setImages] = useState([])
     const [oldImages, setOldImages] = useState([])
+    const { isError, error, data, isLoading } = useProductDetailsQuery(id)
     const imgHandler = e => {
         const files = Array.from(e.target.files)
         setImages([])
@@ -66,9 +67,7 @@ const EditProduct = () => {
         navigate('/adminproducts')
     }
     const categories = ['Laptop', 'Phone', 'Clothes', 'Shoes', 'Camera']
-    useEffect(() => {
-        dispatch(productDetails(id))
-    }, [dispatch, id])
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (productDetail) {
             setName(productDetail.name)
@@ -83,7 +82,7 @@ const EditProduct = () => {
     }, [dispatch, error, productError])
     return (
         <>
-            {detailsLoading ? <Loader /> : <>
+            {isLoading ? <Loader /> : <>
                 <MetaData title={"eCommerce"} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="dashboard">

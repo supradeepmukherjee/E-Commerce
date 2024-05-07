@@ -1,9 +1,9 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
+import mongoose, { Schema, model, Types } from 'mongoose'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import { randomBytes, createHash } from 'crypto'
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: [true, 'Name cant be blank'],
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     },
     cartItems: [{
         item: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: 'Product'
         },
         qty: {
@@ -54,12 +54,12 @@ const userSchema = new mongoose.Schema({
         state: String,
         country: String,
         pincode: {
-            type: Number,
+            type: String,
             maxLength: [6, "Pincode must be of 6 digits"],
             minLength: [6, "Pincode must be of 6 digits"]
         },
         phone: {
-            type: Number,
+            type: String,
             maxLength: [10, "Pincode must be of 10 digits"],
             minLength: [10, "Pincode must be of 10 digits"]
         }
@@ -82,10 +82,10 @@ userSchema.methods.comparePassword = async function (password) {
 }
 
 userSchema.methods.generateResetPasswordToken = async function () {
-    const resetToken = crypto.randomBytes(20).toString('hex')
-    this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+    const resetToken = randomBytes(20).toString('hex')
+    this.resetPasswordToken = createHash('sha256').update(resetToken).digest('hex')
     this.resetPasswordExpire = Date.now() + (15 * 60000)
     return resetToken
 }
 
-module.exports = mongoose.model('UserEcom', userSchema)
+export const User = mongoose.models.UserEcom || model('UserEcom', userSchema)

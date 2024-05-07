@@ -11,34 +11,34 @@ import SideBar from '../SideBar/SideBar'
 import { Country, State } from "country-state-city";
 import './ProcessOrder.css'
 import AccountTree from '@mui/icons-material/AccountTree'
+import { useGetOneOrderQuery } from '../../../redux/api/order'
+import useErrors from '../../../hooks/useErrors'
 
 const ProcessOrder = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { id } = useParams()
-    const { loading, order, error } = useSelector(state => state.order)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
     const [alertType, setAlertType] = useState('')
     const [status, setStatus] = useState('')
+    const { isError, error, data, isLoading } = useGetOneOrderQuery(id)
     const submitHandler = async e => {
         e.preventDefault()
         alert('info', setAlertType, 'Updating Order Status. Please wait', setAlertMsg, setAlertVisibility, dispatch)
         await dispatch(editOrder(id, status))
         navigate('/adminorders')
     }
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error])
-    useEffect(() => {
-        dispatch(getOneOrder(id))
-    }, [dispatch, id])
     return (
         <>
-            {loading ? <Loader /> : <>
+            {isLoading ? <Loader /> : <>
                 <MetaData title={"eCommerce"} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="dashboard">

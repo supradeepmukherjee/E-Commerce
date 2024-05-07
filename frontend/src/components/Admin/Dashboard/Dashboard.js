@@ -13,6 +13,10 @@ import { getMyProducts } from '../../../Actions/Product'
 import alert from '../../../alert'
 import { getOrders } from '../../../Actions/Order'
 import { allUsers } from '../../../Actions/User'
+import { useGetMyProductsQuery } from '../../../redux/api/product'
+import { useGetAdminOrdersQuery } from '../../../redux/api/order'
+import { useAllUsersQuery } from '../../../redux/api/user'
+import useErrors from '../../../hooks/useErrors'
 Chart.register(...registerables);
 
 const Dashboard = () => {
@@ -20,9 +24,9 @@ const Dashboard = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
   const dispatch = useDispatch()
-  const { loading, products, error } = useSelector(state => state.products)
-  const { loading: ordersLoading, orders, error: ordersError } = useSelector(state => state.order)
-  const { loading: usersLoading, users, error: usersError } = useSelector(state => state.user)
+  const { isError, error, data, isLoading } = useGetMyProductsQuery()
+  const { isError: ordersIsError, error: ordersError, data: ordersData, isLoading: ordersLoading } = useGetAdminOrdersQuery()
+  const { isError: usersIsError, isLoading: usersLoading, error: usersError, data: usersData } = useAllUsersQuery()
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
   const [alertType, setAlertType] = useState('')
@@ -55,11 +59,11 @@ const Dashboard = () => {
       }
     ]
   }
-  useEffect(() => {
-    dispatch(getMyProducts())
-    dispatch(getOrders())
-    dispatch(allUsers())
-  }, [dispatch])
+  useErrors([
+    { isError, error },
+    { isError: usersIsError, error: usersError },
+    { isError: ordersIsError, error: ordersError },
+  ])
   useEffect(() => {
     if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
     if (ordersError) alert('error', setAlertType, ordersError, setAlertMsg, setAlertVisibility, dispatch)

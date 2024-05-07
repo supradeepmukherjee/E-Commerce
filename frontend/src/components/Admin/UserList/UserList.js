@@ -10,13 +10,14 @@ import alert from '../../../alert'
 import SideBar from '../SideBar/SideBar'
 import './UserList.css'
 import { allUsers } from '../../../Actions/User'
+import { useAllUsersQuery } from '../../../redux/api/user'
+import useErrors from '../../../hooks/useErrors'
 
 const UserList = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
   const dispatch = useDispatch()
-  const { loading, users, error } = useSelector(state => state.user)
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
   const [alertType, setAlertType] = useState('')
@@ -74,15 +75,14 @@ const UserList = () => {
       role: user.role
     })
   });
-  useEffect(() => {
-    dispatch(allUsers())
-  }, [dispatch])
+  const { data, isLoading, error, isError } = useAllUsersQuery()
+  useErrors([{ isError, error }])
   useEffect(() => {
     if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
   }, [dispatch, error])
   return (
     <>
-      {loading ? <Loader /> : <>
+      {isLoading ? <Loader /> : <>
         <MetaData title={"eCommerce"} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         <div className="dashboard">

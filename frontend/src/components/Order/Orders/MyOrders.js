@@ -10,15 +10,15 @@ import Launch from '@mui/icons-material/Launch';
 import { Typography } from '@mui/material'
 import { loadUser } from '../../../Actions/User'
 import { Link } from 'react-router-dom'
+import { useGetMyOrdersQuery } from '../../../redux/api/order'
+import useErrors from '../../../hooks/useErrors'
 import './MyOrders.css'
 
 const MyOrders = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const dispatch = useDispatch()
-    const { error: userError, user, loading: userLoading } = useSelector(state => state.user)
-    const { loading, error, orders } = useSelector(state => state.order)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
     const [alertType, setAlertType] = useState('')
@@ -74,17 +74,15 @@ const MyOrders = () => {
             amt: item.amt
         })
     });
-    useEffect(() => {
-        dispatch(getMyOrders())
-        dispatch(loadUser())
-    }, [dispatch])
+    const { isError, data, error, isLoading } = useGetMyOrdersQuery()
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
         if (userError) alert('error', setAlertType, userError, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error, userError])
     return (
         <>
-            {loading || userLoading ? <Loader /> : <>
+            {isLoading ? <Loader /> : <>
                 <MetaData title={`MY ORDERS`} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="myOrders">

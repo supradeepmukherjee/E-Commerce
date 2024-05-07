@@ -15,6 +15,8 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './ProductDetails.css'
 import Error404 from '../../Error404/Error404'
+import { useProductDetailsQuery } from '../../../redux/api/product'
+import useErrors from '../../../hooks/useErrors'
 
 const ProductDetails = () => {
   useEffect(() => {
@@ -27,8 +29,6 @@ const ProductDetails = () => {
   const [open, setOpen] = useState(false)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
-  const { loading, productDetails: product, error } = useSelector(state => state.productDetails)
-  const { loading: cartLoading, msg, error: cartError } = useSelector(state => state.productDetails)
   const { error: userError, user } = useSelector(state => state.user)
   const { error: reviewError } = useSelector(state => state.review)
   const { id } = useParams()
@@ -45,9 +45,8 @@ const ProductDetails = () => {
     reviewToggle()
     dispatch(productDetails(id))
   }
-  useEffect(() => {
-    dispatch(productDetails(id))
-  }, [dispatch, id])
+  const { data, isLoading, error, isError } = useProductDetailsQuery()
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (msg) alert('success', setAlertType, msg, setAlertMsg, setAlertVisibility, dispatch)
     if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
@@ -56,7 +55,7 @@ const ProductDetails = () => {
     if (userError) alert('error', setAlertType, userError, setAlertMsg, setAlertVisibility, dispatch)
   }, [cartError, dispatch, error, msg, reviewError, userError])
   return (
-    loading ? <Loader /> :
+    isLoading ? <Loader /> :
       (product ? <>
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         <div className="productDetails">

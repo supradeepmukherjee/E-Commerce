@@ -1,14 +1,16 @@
-const express = require('express')
-const { newOrder, singleOrder, myOrders, allOrders, delOrder,  updateOrderStatus } = require('../controllers/order')
-const { isAuthenticated, authoriseRoles } = require('../middlewares/auth')
+import { Router } from 'express'
+import { newOrder, singleOrder, myOrders, allOrders, delOrder, updateOrderStatus } from '../controllers/order.js'
+import { authoriseRoles } from '../middlewares/auth.js'
 
-const router = express.Router()
+const app = Router()
 
-router.route('/neworder').post(isAuthenticated, newOrder)
-router.route('/myorders').get(isAuthenticated, myOrders)
-router.route('/order/:id').get(isAuthenticated, singleOrder)
-router.route('/admin/allorders').get(isAuthenticated, authoriseRoles('Admin'), allOrders)
-router.route('/admin/delorder/:id').delete(isAuthenticated, authoriseRoles('Admin'), delOrder)
-router.route('/admin/updateorderstatus/:id').put(isAuthenticated, authoriseRoles('Admin'), updateOrderStatus)
+app.post('/neworder', newOrder)
+app.get('/myorders', myOrders)
+app.get('/order/:id', singleOrder)
 
-module.exports = router
+app.use(authoriseRoles('Admin'))
+app.get('/admin/allorders', allOrders)
+app.delete('/admin/delorder/:id', delOrder)
+app.put('/admin/updateorderstatus/:id', updateOrderStatus)
+
+export default app

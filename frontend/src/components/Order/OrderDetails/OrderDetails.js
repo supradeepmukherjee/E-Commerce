@@ -10,20 +10,20 @@ import MetaData from '../../MetaData'
 import { Country, State } from "country-state-city";
 import './OrderDetails.css'
 import Error404 from '../../Error404/Error404'
+import { useGetOneOrderQuery } from '../../../redux/api/order'
+import useErrors from '../../../hooks/useErrors'
 
 const OrderDetails = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const dispatch = useDispatch()
-    const { loading, error, order } = useSelector(state => state.order)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
     const [alertType, setAlertType] = useState('')
     const { id } = useParams()
-    useEffect(() => {
-        dispatch(getOneOrder(id))
-    }, [dispatch, id])
+    const { loading, data, error, isError } = useGetOneOrderQuery(id)
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error])

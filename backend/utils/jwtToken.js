@@ -6,4 +6,4 @@ const sendToken = (user, statusCode, res) => {
     }).json({ success: true, user, token })
 }
 
-module.exports = sendToken
+export default sendToken

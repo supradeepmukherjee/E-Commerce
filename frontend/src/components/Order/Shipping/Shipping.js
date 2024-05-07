@@ -11,10 +11,12 @@ import alert from '../../../alert'
 import Alert from '../../Alert'
 import './Shipping.css'
 import MetaData from '../../MetaData'
+import useErrors from '../../../hooks/useErrors'
 import CheckoutSteps from '../CheckoutSteps'
 import { useNavigate } from 'react-router-dom'
 import { getShipInfo, saveShipInfo } from '../../../Actions/User'
 import Loader from '../../Loader/Loader'
+import { useGetShipInfoQuery } from '../../../redux/api/user'
 
 const Shipping = () => {
   useEffect(() => {
@@ -22,7 +24,6 @@ const Shipping = () => {
   }, []);
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { shipInfo, error, loading } = useSelector(state => state.ship)
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
   const [alertType, setAlertType] = useState('')
@@ -43,12 +44,11 @@ const Shipping = () => {
     await dispatch(saveShipInfo(address, city, state, country, pincode, phone))
     navigate('/confirmorder')
   }
+  const { isLoading, data, isError, error } = useGetShipInfoQuery()
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
   }, [dispatch, error])
-  useEffect(() => {
-    dispatch(getShipInfo())
-  }, [dispatch])
   useEffect(() => {
     if (shipInfo) {
       setAddress(shipInfo.address)
@@ -63,7 +63,7 @@ const Shipping = () => {
   }, [shipInfo])
   return (
     <>
-      {loading ? <Loader /> : <>
+      {isLoading ? <Loader /> : <>
         <MetaData title={`SHIPPING DETAILS`} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         <CheckoutSteps activeStep={0} />

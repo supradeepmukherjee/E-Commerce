@@ -1,47 +1,49 @@
-import { useEffect, useState } from 'react';
-import { Routes, BrowserRouter as Router, Route } from 'react-router-dom';
-import Header from './components/Header/Header';
-import webFont from 'webfontloader'
-import Footer from './components/Footer/Footer';
-import Home from './components/Home/Home';
-import ProductDetails from './components/Product/ProductDetails/ProductDetails';
-import Products from './components/Product/Products/Products';
-import Search from './components/Search/Search';
-import RegisterLogin from './components/User/RegisterLogin/RegisterLogin';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadUser } from './Actions/User';
-import UserOptions from './components/Header/UserOptions';
-import Profile from './components/User/Profile/Profile';
-import UpdateProfile from './components/User/UpdateProfile/UpdateProfile';
-import ChangePassword from './components/User/ChangePassword/ChangePassword';
-import ForgotPassword from './components/User/ForgotPassword/ForgotPassword';
-import ResetPassword from './components/User/ResetPassword/ResetPassword';
-import Cart from './components/Product/Cart/Cart';
-import Shipping from './components/Order/Shipping/Shipping';
-import ConfirmOrder from './components/Order/ConfirmOrder/ConfirmOrder';
-import axios from 'axios';
-import Payment from './components/Order/Payment/Payment';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import Success from './components/Order/Success/Success';
-import Orders from './components/Order/Orders/MyOrders';
-import OrderDetails from './components/Order/OrderDetails/OrderDetails';
-import Dashboard from './components/Admin/Dashboard/Dashboard';
-import ProductList from './components/Admin/ProductList/ProductList';
-import NewProduct from './components/Admin/NewProduct/NewProduct';
-import EditProduct from './components/Admin/EditProduct/EditProduct';
-import OrderList from './components/Admin/OrderList/OrderList';
-import ProcessOrder from './components/Admin/ProcessOrder/ProcessOrder';
-import './App.css'
-import UserList from './components/Admin/UserList/UserList';
-import UpdateRole from './components/Admin/UpdateRole/UpdateRole';
-import About from './components/About/About';
-import Contact from './components/Contact/Contact';
-import Error404 from './components/Error404/Error404';
+import axios from 'axios';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import webFont from 'webfontloader';
+import './App.css';
+import Footer from './components/Footer/Footer';
+import Header from './components/Header/Header';
+import Loader from "./components/Loader/Loader";
+import server from './constant'
+import { userExists, userNotExists } from './redux/reducers/auth'
+const Payment = lazy(() => import('./components/Order/Payment/Payment'))
+const RegisterLogin = lazy(() => import('./components/User/RegisterLogin/RegisterLogin'));
+const Home = lazy(() => import('./components/Home/Home'));
+const ProductDetails = lazy(() => import('./components/Product/ProductDetails/ProductDetails'));
+const Products = lazy(() => import('./components/Product/Products/Products'));
+const Search = lazy(() => import('./components/Search/Search'));
+const UserOptions = lazy(() => import('./components/Header/UserOptions'));
+const Profile = lazy(() => import('./components/User/Profile/Profile'));
+const UpdateProfile = lazy(() => import('./components/User/UpdateProfile/UpdateProfile'));
+const ChangePassword = lazy(() => import('./components/User/ChangePassword/ChangePassword'));
+const ForgotPassword = lazy(() => import('./components/User/ForgotPassword/ForgotPassword'));
+const ResetPassword = lazy(() => import('./components/User/ResetPassword/ResetPassword'));
+const Cart = lazy(() => import('./components/Product/Cart/Cart'));
+const Shipping = lazy(() => import('./components/Order/Shipping/Shipping'));
+const ConfirmOrder = lazy(() => import('./components/Order/ConfirmOrder/ConfirmOrder'));
+const Success = lazy(() => import('./components/Order/Success/Success'));
+const Orders = lazy(() => import('./components/Order/Orders/MyOrders'));
+const OrderDetails = lazy(() => import('./components/Order/OrderDetails/OrderDetails'));
+const Dashboard = lazy(() => import('./components/Admin/Dashboard/Dashboard'));
+const ProductList = lazy(() => import('./components/Admin/ProductList/ProductList'));
+const NewProduct = lazy(() => import('./components/Admin/NewProduct/NewProduct'));
+const EditProduct = lazy(() => import('./components/Admin/EditProduct/EditProduct'));
+const OrderList = lazy(() => import('./components/Admin/OrderList/OrderList'));
+const ProcessOrder = lazy(() => import('./components/Admin/ProcessOrder/ProcessOrder'));
+const UserList = lazy(() => import('./components/Admin/UserList/UserList'));
+const UpdateRole = lazy(() => import('./components/Admin/UpdateRole/UpdateRole'));
+const About = lazy(() => import('./components/About/About'));
+const Contact = lazy(() => import('./components/Contact/Contact'));
+const Error404 = lazy(() => import('./components/Error404/Error404'));
 
 function App() {
   const dispatch = useDispatch()
-  const { isAuthenticated, user } = useSelector(state => state.user)
+  const { user } = useSelector(state => state.user)
   const [key, setKey] = useState('')
   const [tab, setTab] = useState('/')
   const [isAdmin, setIsAdmin] = useState(false)
@@ -50,7 +52,9 @@ function App() {
     setKey(data.key)
   }
   useEffect(() => {
-    dispatch(loadUser())
+    axios.get(`${server}/me`, { withCredentials: true })
+      .then(({ data }) => dispatch(userExists(data.user)))
+      .catch(() => dispatch(userNotExists()))
     getKey()
     webFont.load({ google: { families: ['Roboto', 'Droid Sans', 'Chilanka'] } })
   }, [dispatch])
@@ -59,42 +63,44 @@ function App() {
   }, [user])
   return (
     <Router>
-      <Header change={tab} changeTab={setTab} isAuthenticated={isAuthenticated} />
-      {isAuthenticated && <UserOptions changeTab={setTab} user={user} />}
-      <Routes>
-        <Route exact path='/' element={<Home />} />
-        <Route exact path='/product/:id' element={<ProductDetails />} />
-        <Route exact path='/products' element={<Products />} />
-        <Route exact path='/search' element={<Search />} />
-        <Route exact path='/about' element={<About />} />
-        <Route exact path='/contact' element={<Contact />} />
-        <Route exact path='/products/:keyword' element={<Products />} />
-        <Route exact path='/registerlogin' element={<RegisterLogin />} />
-        <Route exact path='/account' element={isAuthenticated ? <Profile /> : <RegisterLogin />} />
-        <Route exact path='/updateprofile' element={isAuthenticated ? <UpdateProfile /> : <RegisterLogin />} />
-        <Route exact path='/updatepassword' element={isAuthenticated ? <ChangePassword /> : <RegisterLogin />} />
-        <Route exact path='/forgotpassword' element={isAuthenticated ? <Profile /> : <ForgotPassword />} />
-        <Route exact path='/resetpassword/:token' element={isAuthenticated ? <Profile /> : <ResetPassword />} />
-        <Route exact path='/cart' element={isAuthenticated ? <Cart /> : <RegisterLogin />} />
-        <Route exact path='/shipping' element={isAuthenticated ? <Shipping /> : <RegisterLogin />} />
-        <Route exact path='/confirmorder' element={isAuthenticated ? <ConfirmOrder /> : <RegisterLogin />} />
-        <Route exact path='/success' element={isAuthenticated ? <Success /> : <RegisterLogin />} />
-        <Route exact path='/myorders' element={isAuthenticated ? <Orders /> : <RegisterLogin />} />
-        <Route exact path='/order/:id' element={isAuthenticated ? <OrderDetails /> : <RegisterLogin />} />
-        <Route exact path='/dashboard' element={isAdmin ? <Dashboard /> : <RegisterLogin />} />
-        <Route exact path='/adminproducts' element={isAdmin ? <ProductList /> : <RegisterLogin />} />
-        <Route exact path='/adminorders' element={isAdmin ? <OrderList /> : <RegisterLogin />} />
-        <Route exact path='/adminusers' element={isAdmin ? <UserList /> : <RegisterLogin />} />
-        <Route exact path='/adminproduct' element={isAdmin ? <NewProduct /> : <RegisterLogin />} />
-        <Route exact path='/adminproduct/:id' element={isAdmin ? <EditProduct /> : <RegisterLogin />} />
-        <Route exact path='/adminorder/:id' element={isAdmin ? <ProcessOrder /> : <RegisterLogin />} />
-        <Route exact path='/adminuser/:id' element={isAdmin ? <UpdateRole /> : <RegisterLogin />} />
-        <Route path='*' element={window.location.pathname === '/pay' ? null : <Error404 text='Page' />} />
-      </Routes >
+      <Header change={tab} changeTab={setTab} isAuthenticated={user} />
+      {user && <UserOptions changeTab={setTab} uuserser={user} />}
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          <Route exact path='/product/:id' element={<ProductDetails />} />
+          <Route exact path='/products' element={<Products />} />
+          <Route exact path='/search' element={<Search />} />
+          <Route exact path='/about' element={<About />} />
+          <Route exact path='/contact' element={<Contact />} />
+          <Route exact path='/products/:keyword' element={<Products />} />
+          <Route exact path='/registerlogin' element={<RegisterLogin />} />
+          <Route exact path='/account' element={user ? <Profile /> : <RegisterLogin />} />
+          <Route exact path='/updateprofile' element={user ? <UpdateProfile /> : <RegisterLogin />} />
+          <Route exact path='/updatepassword' element={user ? <ChangePassword /> : <RegisterLogin />} />
+          <Route exact path='/forgotpassword' element={user ? <Profile /> : <ForgotPassword />} />
+          <Route exact path='/resetpassword/:token' element={user ? <Profile /> : <ResetPassword />} />
+          <Route exact path='/cart' element={user ? <Cart /> : <RegisterLogin />} />
+          <Route exact path='/shipping' element={user ? <Shipping /> : <RegisterLogin />} />
+          <Route exact path='/confirmorder' element={user ? <ConfirmOrder /> : <RegisterLogin />} />
+          <Route exact path='/success' element={user ? <Success /> : <RegisterLogin />} />
+          <Route exact path='/myorders' element={user ? <Orders /> : <RegisterLogin />} />
+          <Route exact path='/order/:id' element={user ? <OrderDetails /> : <RegisterLogin />} />
+          <Route exact path='/dashboard' element={isAdmin ? <Dashboard /> : <RegisterLogin />} />
+          <Route exact path='/adminproducts' element={isAdmin ? <ProductList /> : <RegisterLogin />} />
+          <Route exact path='/adminorders' element={isAdmin ? <OrderList /> : <RegisterLogin />} />
+          <Route exact path='/adminusers' element={isAdmin ? <UserList /> : <RegisterLogin />} />
+          <Route exact path='/adminproduct' element={isAdmin ? <NewProduct /> : <RegisterLogin />} />
+          <Route exact path='/adminproduct/:id' element={isAdmin ? <EditProduct /> : <RegisterLogin />} />
+          <Route exact path='/adminorder/:id' element={isAdmin ? <ProcessOrder /> : <RegisterLogin />} />
+          <Route exact path='/adminuser/:id' element={isAdmin ? <UpdateRole /> : <RegisterLogin />} />
+          <Route path='*' element={window.location.pathname === '/pay' ? null : <Error404 text='Page' />} />
+        </Routes>
+      </Suspense>
       {key &&
         <Elements stripe={loadStripe(key)}>
           <Routes>
-            <Route exact path='/pay' element={isAuthenticated ? <Payment /> : <RegisterLogin />} />
+            <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
           </Routes>
         </Elements>
       }

@@ -9,10 +9,10 @@ import Loader from '../../Loader/Loader'
 import alert from '../../../alert'
 import './UpdateProfile.css'
 import MetaData from '../../MetaData'
+import { useGetUserQuery } from '../../../redux/api/user'
 
 const UpdateProfile = () => {
   const dispatch = useDispatch()
-  const { user: sUser, loading: uLoading, error: loadError } = useSelector(state => state.user)
   const { loading, msg, error } = useSelector(state => state.updateMyProfile)
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
@@ -38,9 +38,8 @@ const UpdateProfile = () => {
     dispatch(updateProfile(user.name, user.email, user.chavi))
     alert('info', setAlertType, 'Please Wait', setAlertMsg, setAlertVisibility, dispatch)
   }
-  useEffect(() => {
-    dispatch(loadUser())
-  }, [dispatch])
+  const { data, isError, isLoading, error } = useGetUserQuery()
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (sUser) {
       setUser({
@@ -56,7 +55,7 @@ const UpdateProfile = () => {
   }, [dispatch, error, loadError, msg, navigate, user])
   return (
     <>
-      {uLoading ? <Loader /> : <>
+      {isLoading ? <Loader /> : <>
         <MetaData title={`Update Profile`} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         <div className="updateProfile">

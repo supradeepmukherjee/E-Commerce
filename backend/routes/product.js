@@ -1,15 +1,23 @@
-const express = require('express')
-const { getAllProducts, createProduct, updateProduct, delProduct, productDetails, review, reviewsOfProduct, delReview, getProducts } = require('../controllers/product')
-const { isAuthenticated, authoriseRoles } = require('../middlewares/auth')
+import { Router } from 'express'
+import { getAllProducts, createProduct, updateProduct, delProduct, productDetails, review, reviewsOfProduct, delReview, getProducts } from '../controllers/product.js'
+import { isAuthenticated, authoriseRoles } from '../middlewares/auth.js'
 
-const router = express.Router()
+const app = Router()
 
-router.route('/products').get(getProducts)
-router.route('/admin/products').get(isAuthenticated, authoriseRoles('Admin'), getAllProducts)
-router.route('/admin/newproduct').post(isAuthenticated, authoriseRoles('Admin'), createProduct)
-router.route('/admin/product/:id').put(isAuthenticated, authoriseRoles('Admin'), updateProduct).delete(isAuthenticated, authoriseRoles('Admin'), delProduct)
-router.route('/product/:id').get(productDetails)
-router.route('/review').put(isAuthenticated, review)
-router.route('/review/:id').get(reviewsOfProduct).delete(isAuthenticated, delReview)
+app.route('/products').get(getProducts)
+app.route('/product/:id').get(productDetails)
 
-module.exports = router
+app.use(isAuthenticated)
+app.put('/review', review)
+app.route('/review/:id')
+    .get(reviewsOfProduct)
+    .delete(delReview)
+
+app.use(authoriseRoles('Admin'))
+app.get('/admin/products', getAllProducts)
+app.post('/admin/newproduct', createProduct)
+app.route('/admin/product/:id')
+    .put(updateProduct)
+    .delete(delProduct)
+
+export default app

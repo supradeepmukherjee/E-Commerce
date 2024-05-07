@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { loadUser } from '../../../Actions/User'
 import alert from '../../../alert'
+import useErrors from '../../../hooks/useErrors'
+import { useGetUserQuery } from '../../../redux/api/user'
 import Alert from '../../Alert'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
@@ -12,20 +14,18 @@ const Profile = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
-  const { error, loading, user } = useSelector(state => state.user)
   const dispatch = useDispatch()
   const [alertVisibility, setAlertVisibility] = useState('hidden')
   const [alertMsg, setAlertMsg] = useState('')
   const [alertType, setAlertType] = useState('')
-  useEffect(() => {
-    dispatch(loadUser())
-  }, [dispatch])
+  const { data, isError, isLoading, error } = useGetUserQuery()
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (error && error !== 'Please login first') alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
   }, [dispatch, error])
   return (
     <>
-      {loading ? <Loader /> : <>
+      {isLoading ? <Loader /> : <>
         <MetaData title={`${user.name}'s Profile`} />
         <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
         <div className="profile">

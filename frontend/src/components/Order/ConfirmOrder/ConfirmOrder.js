@@ -11,16 +11,16 @@ import CheckoutSteps from '../CheckoutSteps'
 import alert from '../../../alert'
 import { Country, State } from "country-state-city";
 import './ConfirmOrder.css'
+import { useGetShipInfoQuery, useGetUserQuery } from '../../../redux/api/user'
+import useErrors from '../../../hooks/useErrors'
+import { useGetItemsQuery } from '../../../redux/api/cart'
 
 const ConfirmOrder = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { error: userError, user, loading: userLoading } = useSelector(state => state.user)
-    const { loading, error, cartItems } = useSelector(state => state.cartItems)
-    const { shipInfo, error: shipError } = useSelector(state => state.ship)
     const itemsQty = useSelector(state => state.user.user.cartItems)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
@@ -39,6 +39,14 @@ const ConfirmOrder = () => {
     const tax = gTotal * .18
     const total = gTotal + tax + shippingCharges
     const pay = () => navigate('/pay')
+    const { data, isLoading, error, isError } = useGetUserQuery()
+    const { data: itemsData, isLoading: itemsLoading, error: itemsError, isError: itemsIsError } = useGetItemsQuery()
+    const { isLoading: shipLoading, data: shipData, error: shipError, isError: shipIsError } = useGetShipInfoQuery()
+    useErrors([
+        { error, isError },
+        { error: itemsError, isError: itemsIsError },
+        { error: shipError, isError: shipIsError },
+    ])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
         if (userError) alert('error', setAlertType, userError, setAlertMsg, setAlertVisibility, dispatch)
@@ -51,7 +59,8 @@ const ConfirmOrder = () => {
     }, [dispatch])
     return (
         <>
-            {loading || userLoading ? <Loader /> : <>
+            {isLoading || itemsLoading ||
+                shipLoading ? <Loader /> : <>
                 <MetaData title={`CONFIRM ORDER`} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="steps">

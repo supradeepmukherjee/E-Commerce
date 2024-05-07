@@ -1,24 +1,28 @@
-const express = require('express')
-const { register, login, logout, forgotPassword, resetPassword, userDetails, updatePassword, updateProfile, allUsers, viewUser, updateRole, addItemToCart, cartItems, removeItem, getShipInfo, shipNow } = require('../controllers/user')
-const { isAuthenticated, authoriseRoles } = require('../middlewares/auth')
+import { Router } from 'express'
+import { register, login, logout, forgotPassword, resetPassword, userDetails, updatePassword, updateProfile, allUsers, viewUser, updateRole, addItemToCart, cartItems, removeItem, getShipInfo, shipNow } from '../controllers/user.js'
+import { isAuthenticated, authoriseRoles } from '../middlewares/auth.js'
 
-const router = express.Router()
+const app = Router()
 
-router.route('/register').post(register)
-router.route('/login').post(login)
-router.route('/logout').get(logout)
-router.route('/forgotpassword').post(forgotPassword)
-router.route('/resetpassword/:token').put(resetPassword)
-router.route('/me').get(isAuthenticated, userDetails)
-router.route('/updatepassword').put(isAuthenticated, updatePassword)
-router.route('/updateprofile').put(isAuthenticated, updateProfile)
-router.route('/addtocart').put(isAuthenticated, addItemToCart)
-router.route('/cartitems').get(isAuthenticated, cartItems)
-router.route('/getship').get(isAuthenticated, getShipInfo)
-router.route('/shipnow').put(isAuthenticated, shipNow)
-router.route('/removeitem/:id').put(isAuthenticated, removeItem)
-router.route('/admin/users').get(isAuthenticated, authoriseRoles('Admin'), allUsers)
-router.route('/admin/updaterole/:id').put(isAuthenticated, authoriseRoles('Admin'), updateRole)
-router.route('/admin/user/:id').get(isAuthenticated, authoriseRoles('Admin'), viewUser)
+app.post('/register', register)
+app.post('/login', login)
+app.get('/logout', logout)
+app.post('/forgotpassword', forgotPassword)
+app.put('/resetpassword/:token', resetPassword)
 
-module.exports = router
+app.use(isAuthenticated)
+app.get('/me', userDetails)
+app.put('/updatepassword', updatePassword)
+app.put('/updateprofile', updateProfile)
+app.put('/addtocart', addItemToCart)
+app.get('/cartitems', cartItems)
+app.get('/getship', getShipInfo)
+app.put('/shipnow', shipNow)
+app.put('/removeitem/:id', removeItem)
+
+app.use(authoriseRoles('Admin'))
+app.get('/admin/users', allUsers)
+app.put('/admin/updaterole/:id', updateRole)
+app.get('/admin/user/:id', viewUser)
+
+export default app

@@ -1,4 +1,4 @@
-const mailer = require('nodemailer')
+import { createTransport } from 'nodemailer'
 
 const sendEmail = async ({ to, subject, text }) => {
     // const transporter = mailer.createTransport({
@@ -10,7 +10,7 @@ const sendEmail = async ({ to, subject, text }) => {
     //     },
     //     service: process.env.SMTP_SERVICE,
     // })
-    const transporter = mailer.createTransport({
+    const transporter = createTransport({
         host: "sandbox.smtp.mailtrap.io",
         port: 2525,
         auth: {
@@ -21,4 +21,4 @@ const sendEmail = async ({ to, subject, text }) => {
     await transporter.sendMail({ from: process.env.SMTP_MAIL, to, text, subject })
 }
 
-module.exports = sendEmail
+export default sendEmail

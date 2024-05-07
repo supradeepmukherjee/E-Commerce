@@ -13,15 +13,16 @@ import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material'
 import alert from '../../../alert'
 import SideBar from '../SideBar/SideBar'
 import './ProductList.css'
+import { useGetMyProductsQuery } from '../../../redux/api/product'
+import useErrors from '../../../hooks/useErrors'
 
 const ProductList = () => {
     useEffect(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
-    const dispatch = useDispatch() 
+    const dispatch = useDispatch()
     const [open, setOpen] = useState(false)
     const [id, setId] = useState(null)
-    const { loading, products, error } = useSelector(state => state.products)
     const [alertVisibility, setAlertVisibility] = useState('hidden')
     const [alertMsg, setAlertMsg] = useState('')
     const [alertType, setAlertType] = useState('')
@@ -105,15 +106,14 @@ const ProductList = () => {
         dispatch(getMyProducts())
         setOpen(false)
     }
-    useEffect(() => {
-        dispatch(getMyProducts())
-    }, [dispatch])
+    const { isLoading, data, error, isError } = useGetMyProductsQuery()
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
     }, [dispatch, error])
     return (
         <>
-            {loading ? <Loader /> : <>
+            {isLoading ? <Loader /> : <>
                 <MetaData title={"eCommerce"} />
                 <Alert alertVisibility={alertVisibility} alertMsg={alertMsg} alertType={alertType} />
                 <div className="dashboard">
