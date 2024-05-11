@@ -1,3 +1,3 @@
-const server = process.env.SERVER
+const server = import.meta.env.VITE_SERVER
 
 export default server

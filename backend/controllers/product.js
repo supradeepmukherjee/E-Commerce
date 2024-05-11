@@ -2,25 +2,25 @@ import { Product } from '../models/Product.js'
 import cloudinary from 'cloudinary'
 import { tryCatch } from "../middlewares/error.js"
 import { ErrorHandler } from "../utils/utility.js"
+import { uploadToCloudinary } from '../utils/cloudinary.js'
 
 const createProduct = tryCatch(async (req, res) => { //admin
-    let images = []
-    if (typeof req.body.images === 'string') images.push(req.body.images)
-    else images = req.body.images
-    let imagesLink = []
-    for (let i = 0; i < images.length; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i], {
-            folder: 'Products',
-            width: 480,
-            height: 360,
-            crop: 'scale'
-        })
-        imagesLink.push({
-            public_id: result.public_id,
-            url: result.secure_url
+    const files = req.files || []
+    if (files.length < 1) return next(new ErrorHandler(400, 'Please provide attachments'))
+    let nonEmptyFiles = []
+    files.forEach(f => {
+        if (f.size > 0) nonEmptyFiles.push(f)
+    })
+    if (nonEmptyFiles.length < 1) return res.status(400).json({ success: false, msg: 'Empty files cannot be sent' })
+    let imgs = []
+    const imgsResult = await uploadToCloudinary(nonEmptyFiles, 'Products')
+    for (let i = 0; i < imgsResult.length; i++) {
+        imgs.push({
+            public_id: imgsResult[i].id,
+            url: imgsResult[i].url
         })
     }
-    req.body.images = imagesLink
+    req.body.images = imgs
     req.body.user = req.user._id
     const product = await Product.create(req.body)
     res.status(201).json({ product, success: true })
@@ -89,7 +89,12 @@ const updateProduct = tryCatch(async (req, res) => { //admin
     }
     let imagesLink = []
     for (let i = 0; i < images.length; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i], { folder: 'Products' })
+        const result = await cloudinary.v2.uploader.upload(images[i], {
+            folder: 'Products',
+            width: 480,
+            height: 360,
+            crop: 'scale'
+        })
         imagesLink.push({
             public_id: result.public_id,
             url: result.secure_url

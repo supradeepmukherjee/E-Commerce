@@ -7,10 +7,10 @@ const api = createApi({
     tagTypes: ['user', 'admin-user'],
     endpoints: ({ mutation, query }) => ({
         register: mutation({
-            query: ({ name, email, password, chavi }) => ({
+            query: data => ({
                 url: `/register`,
                 method: `POST`,
-                body: { name, email, password, chavi },//file
+                body: data,//file
                 credentials: 'include'
             }),
             invalidatesTags: ['user']
@@ -46,10 +46,10 @@ const api = createApi({
             providesTags: ['admin-user']
         }),
         updateProfile: mutation({
-            query: ({ name, email, chavi }) => ({
+            query: data => ({
                 url: `/updateprofile`,
                 method: `PUT`,
-                body: { name, email, chavi },
+                body: data,
                 credentials: 'include'
             }),
             invalidatesTags: ['admin-user', 'user']
@@ -95,8 +95,17 @@ const api = createApi({
             }),
             providesTags: ['user']
         }),
+        updateShip: mutation({
+            query: ({ address, city, state, country, pincode, phone }) => ({
+                url: `/update-ship`,
+                method: `PUT`,
+                body: { address, city, state, country, pincode, phone },
+                credentials: 'include'
+            }),
+            invalidatesTags: ['user']
+        }),
     })
 })
 
 export default api
-export const { useAllUsersQuery, useChangePasswordMutation, useForgotPasswordMutation, useGetShipInfoQuery, useGetUserProfileQuery, useGetUserQuery, useLoginMutation, useRegisterMutation, useResetPasswordMutation, useUpdateProfileMutation, useUpdateRoleMutation } = api
+export const { useAllUsersQuery, useChangePasswordMutation, useForgotPasswordMutation, useGetShipInfoQuery, useGetUserProfileQuery, useGetUserQuery, useLoginMutation, useRegisterMutation, useResetPasswordMutation, useUpdateProfileMutation, useUpdateRoleMutation, useUpdateShipMutation, useLazyGetUserQuery } = api

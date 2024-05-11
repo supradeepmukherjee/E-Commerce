@@ -1,11 +1,12 @@
 import { Router } from 'express'
-import { getAllProducts, createProduct, updateProduct, delProduct, productDetails, review, reviewsOfProduct, delReview, getProducts } from '../controllers/product.js'
-import { isAuthenticated, authoriseRoles } from '../middlewares/auth.js'
+import { createProduct, delProduct, delReview, getAllProducts, getProducts, productDetails, review, reviewsOfProduct, updateProduct } from '../controllers/product.js'
+import { authoriseRoles, isAuthenticated } from '../middlewares/auth.js'
+import { multerAttachments } from '../middlewares/multer.js'
 
 const app = Router()
 
-app.route('/products').get(getProducts)
-app.route('/product/:id').get(productDetails)
+app.get('/products', getProducts)
+app.get('/product/:id', productDetails)
 
 app.use(isAuthenticated)
 app.put('/review', review)
@@ -15,9 +16,9 @@ app.route('/review/:id')
 
 app.use(authoriseRoles('Admin'))
 app.get('/admin/products', getAllProducts)
-app.post('/admin/newproduct', createProduct)
+app.post('/admin/newproduct', multerAttachments, createProduct)
 app.route('/admin/product/:id')
-    .put(updateProduct)
+    .put(multerAttachments, updateProduct)
     .delete(delProduct)
 
 export default app

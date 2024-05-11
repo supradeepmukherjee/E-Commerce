@@ -3,26 +3,24 @@ import crypto from 'crypto'
 import { tryCatch } from "../middlewares/error.js"
 import { Product } from '../models/Product.js'
 import { User } from '../models/User.js'
+import { uploadToCloudinary } from '../utils/cloudinary.js'
 import sendToken from '../utils/jwtToken.js'
 import sendEmail from '../utils/sendEmail.js'
 import { ErrorHandler } from "../utils/utility.js"
 
 const register = tryCatch(async (req, res) => {
-    const { name, email, password, chavi } = req.body
+    const { name, email, password } = req.body
+    const file = req.file
     let user = await User.findOne({ email })
     if (user) return next(new ErrorHandler(400, 'User already exists'))
-    const myCloud = await v2.uploader.upload(chavi, {
-        folder: 'EcomChavi',
-        width: 150,
-        crop: 'scale'
-    })
+    const chaviResult = await uploadToCloudinary([file], 'EcomChavi')
     user = await User.create({
         name,
         email,
         password,
         chavi: {
-            public_id: myCloud.public_id,
-            url: myCloud.secure_url
+            public_id: chaviResult[0].id,
+            url: chaviResult[0].url
         },
         shippingInfo: {
             address: '',
@@ -33,7 +31,7 @@ const register = tryCatch(async (req, res) => {
             phone: '0000000000'
         }
     })
-    sendToken(user, 201, res)
+    sendToken(user, 201, res, 'Regsitered Successfully')
 })
 
 const login = tryCatch(async (req, res) => {
@@ -101,18 +99,15 @@ const updatePassword = tryCatch(async (req, res) => {
 const updateProfile = tryCatch(async (req, res) => {
     const user = await User.findById(req.user._id)
     if (!user) return next(new ErrorHandler(404, 'User not found'))
-    const { name, email, chavi } = req.body
-    user.name = name
-    user.email = email
-    if (chavi) {
+    const { name, email } = req.body
+    const file = req.file
+    if (name) user.name = name
+    if (email) user.email = email
+    if (file) {
         await v2.uploader.destroy(user.chavi.public_id)
-        const myCloud = await v2.uploader.upload(chavi, {
-            folder: 'EcomChavi',
-            width: 150,
-            crop: 'scale'
-        })
-        user.chavi.public_id = myCloud.public_id
-        user.chavi.url = myCloud.secure_url
+        const chaviResult = await uploadToCloudinary([file], 'EcomChavi')
+        user.chavi.public_id = chaviResult[0].id
+        user.chavi.url = chaviResult[0].url
     }
     await user.save()
     res.status(200).json({ success: true, user, msg: "Profile Updated" })
@@ -184,7 +179,7 @@ const getShipInfo = tryCatch(async (req, res) => {
     res.status(200).json({ success: true, shipInfo: user.shippingInfo })
 })
 
-const shipNow = tryCatch(async (req, res) => {
+const updateShip = tryCatch(async (req, res) => {
     const user = await User.findById(req.user._id)
     if (!user) return next(new ErrorHandler(404, "User doesn\'t exist"))
     const { address, city, state, country, pincode, phone } = req.body
@@ -198,4 +193,4 @@ const shipNow = tryCatch(async (req, res) => {
     res.status(200).json({ success: true, shipInfo: user.shippingInfo })
 })
 
-export { addItemToCart, allUsers, cartItems, forgotPassword, getShipInfo, login, logout, register, removeItem, resetPassword, shipNow, updatePassword, updateProfile, updateRole, userDetails, viewUser }
+export { addItemToCart, allUsers, cartItems, forgotPassword, getShipInfo, login, logout, register, removeItem, resetPassword, updateShip, updatePassword, updateProfile, updateRole, userDetails, viewUser }

@@ -78,5 +78,4 @@ const api = createApi({
 })
 
 export default api
-export const { useDelProductMutation, useDelReviewMutation, useEditProductMutation, useGetMyProductsQuery, useGetProductsQuery, useNewProductMutation, useProductDetailsQuery, useSubmitReviewMutation,
-useLazyGetMyProductsQuery } = api
+export const { useDelProductMutation, useDelReviewMutation, useEditProductMutation, useGetMyProductsQuery, useGetProductsQuery, useNewProductMutation, useProductDetailsQuery, useSubmitReviewMutation, useLazyGetProductsQuery, useLazyGetMyProductsQuery, useLazyProductDetailsQuery } = api

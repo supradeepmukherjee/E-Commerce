@@ -35,4 +35,4 @@ const api = createApi({
 })
 
 export default api
-export const { useAddToCartMutation, useGetItemsQuery, useRemoveItemMutation } = api
+export const { useAddToCartMutation, useGetItemsQuery, useRemoveItemMutation,useLazyGetItemsQuery } = api

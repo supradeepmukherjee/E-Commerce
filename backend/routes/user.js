@@ -1,10 +1,11 @@
 import { Router } from 'express'
-import { register, login, logout, forgotPassword, resetPassword, userDetails, updatePassword, updateProfile, allUsers, viewUser, updateRole, addItemToCart, cartItems, removeItem, getShipInfo, shipNow } from '../controllers/user.js'
-import { isAuthenticated, authoriseRoles } from '../middlewares/auth.js'
+import { addItemToCart, allUsers, cartItems, forgotPassword, getShipInfo, login, logout, register, removeItem, resetPassword, updatePassword, updateProfile, updateRole, updateShip, userDetails, viewUser } from '../controllers/user.js'
+import { authoriseRoles, isAuthenticated } from '../middlewares/auth.js'
+import { singleChavi } from '../middlewares/multer.js'
 
 const app = Router()
 
-app.post('/register', register)
+app.post('/register', singleChavi, register)
 app.post('/login', login)
 app.get('/logout', logout)
 app.post('/forgotpassword', forgotPassword)
@@ -13,11 +14,11 @@ app.put('/resetpassword/:token', resetPassword)
 app.use(isAuthenticated)
 app.get('/me', userDetails)
 app.put('/updatepassword', updatePassword)
-app.put('/updateprofile', updateProfile)
+app.put('/updateprofile', singleChavi, updateProfile)
 app.put('/addtocart', addItemToCart)
 app.get('/cartitems', cartItems)
 app.get('/getship', getShipInfo)
-app.put('/shipnow', shipNow)
+app.put('/update-ship', updateShip)
 app.put('/removeitem/:id', removeItem)
 
 app.use(authoriseRoles('Admin'))

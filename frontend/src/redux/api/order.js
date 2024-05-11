@@ -57,4 +57,4 @@ const api = createApi({
 })
 
 export default api
-export const { useDelOrderMutation, useEditOrderMutation, useGetAdminOrdersQuery, useGetMyOrdersQuery, useGetOneOrderQuery, useNewOrderMutation } = api
+export const { useDelOrderMutation, useEditOrderMutation, useGetAdminOrdersQuery, useGetMyOrdersQuery, useGetOneOrderQuery, useNewOrderMutation, useLazyGetAdminOrdersQuery } = api
