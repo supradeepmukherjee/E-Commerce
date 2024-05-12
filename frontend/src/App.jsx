@@ -1,18 +1,18 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import axios from 'axios';
 import { lazy, Suspense, useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import webFont from 'webfontloader';
 import './App.css';
-import Alert from "./components/Alert";
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 import Loader from "./components/Loader/Loader";
+import Payment from './components/Order/Payment/Payment';
+import { useKeyQuery } from "./redux/api/stripe";
 import { useLazyGetUserQuery } from "./redux/api/user";
 import { userExists, userNotExists } from './redux/reducers/auth';
-const Payment = lazy(() => import('./components/Order/Payment/Payment'))
 const RegisterLogin = lazy(() => import('./components/User/RegisterLogin/RegisterLogin'));
 const Home = lazy(() => import('./components/Home/Home'));
 const ProductDetails = lazy(() => import('./components/Product/ProductDetails/ProductDetails'));
@@ -45,30 +45,37 @@ const Error404 = lazy(() => import('./components/Error404/Error404'));
 function App() {
   const dispatch = useDispatch()
   const { user } = useSelector(({ auth }) => auth)
-  const [key, setKey] = useState('')
   const [tab, setTab] = useState('/')
   const [isAdmin, setIsAdmin] = useState(false)
+  const [key, setKey] = useState('')
   const [getUser] = useLazyGetUserQuery()
-  const { type, msg, visible } = useSelector(({ alert }) => alert)
-  const getKey = async () => {
-    const { data } = await axios.get('/api/v1/key')
-    setKey(data.key)
-  }
+  const { data } = useKeyQuery()
   useEffect(() => {
+    if (data) setKey(data.key)
+  }, [data])
+  useEffect(() => {
+    webFont.load({ google: { families: ['Roboto', 'Droid Sans', 'Chilanka'] } })
     getUser()
       .then(({ data }) => dispatch(userExists(data.user)))
       .catch(() => dispatch(userNotExists()))
-    getKey()
-    webFont.load({ google: { families: ['Roboto', 'Droid Sans', 'Chilanka'] } })
   }, [dispatch, getUser])
   useEffect(() => {
     if (user && user.role === 'Admin') setIsAdmin(true)
   }, [user])
   return (
     <Router>
-      <Alert alertVisibility={visible} alertMsg={msg} alertType={type} />
       <Header change={tab} changeTab={setTab} isAuthenticated={user} />
-      {user && <UserOptions changeTab={setTab} uuserser={user} />}
+      {user &&
+        <Suspense fallback={<Loader />}>
+          <UserOptions changeTab={setTab} user={user} />
+        </Suspense>}
+      {key &&
+        <Elements stripe={loadStripe(key)}>
+          <Routes>
+            <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
+          </Routes>
+        </Elements>
+      }
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route exact path='/' element={<Home />} />
@@ -101,14 +108,8 @@ function App() {
           <Route path='*' element={window.location.pathname === '/pay' ? null : <Error404 text='Page' />} />
         </Routes>
       </Suspense>
-      {key &&
-        <Elements stripe={loadStripe(key)}>
-          <Routes>
-            <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
-          </Routes>
-        </Elements>
-      }
       <Footer />
+      <Toaster position='top-center' />
     </Router >
   );
 }

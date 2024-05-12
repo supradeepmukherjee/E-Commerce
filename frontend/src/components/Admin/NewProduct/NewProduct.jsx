@@ -5,22 +5,19 @@ import Description from '@mui/icons-material/Description'
 import Spellcheck from '@mui/icons-material/Spellcheck'
 import Storage from '@mui/icons-material/Storage'
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import { loadUser } from '../../../Actions/User'
-import alert from '../../../alert'
+import useMutation from '../../../hooks/useMutation'
+import { useNewProductMutation } from '../../../redux/api/product'
 import MetaData from '../../MetaData'
 import SideBar from '../SideBar/SideBar'
-import useMutation from '../../../hooks/useMutation'
 import './NewProduct.css'
-import { useNewProductMutation } from '../../../redux/api/product'
 
 const NewProduct = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
-    const [newProduct,loading,] = useMutation(useNewProductMutation)
-    const dispatch = useDispatch()
+    const [newProduct, loading,] = useMutation(useNewProductMutation)
     const navigate = useNavigate()
     const [name, setName] = useState("")
     const [price, setPrice] = useState(null)
@@ -28,46 +25,39 @@ const NewProduct = () => {
     const [category, setCategory] = useState("")
     const [stock, setStock] = useState(null)
     const [images, setImages] = useState([])
+    const [imgFiles, setImgFiles] = useState([])
     const imgHandler = e => {
         const files = Array.from(e.target.files)
+        if (files.length < 1) return
         setImages([])
         files.forEach(file => {
             const reader = new FileReader()
             reader.readAsDataURL(file)
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setImages(old => [...old, reader.result])
-                }
+            reader.onloadend = () => {
+                setImages(old => [...old, reader.result])
             }
         });
+        setImgFiles(files)
     }
     const submitHandler = async e => {
         e.preventDefault()
-        console.log(images)
         const form = new FormData();
         form.set("name", name);
         form.set("price", price);
         form.set("description", description);
         form.set("category", category);
         form.set("stock", stock);
-        images.forEach(image => form.append("images", image))
-        if (price < 10) return useAlert([], 'error', 'Price of product must be of min. Rs. 10')
-        if (price > 99999999) return useAlert([], 'error', 'Price of product must be less than Rs 10 crore')
-        if (stock > 9999) return useAlert([], 'error', 'Stock must be less than 10,000')
-        if (stock < 0) return useAlert([], 'error', 'Stock must not be negative')
-        if (category === '') return useAlert([], 'error', 'Please select a category')
-        if (images.length === 0) return useAlert([], 'error', 'Please upload image(s)')
-        useAlert([], 'info', 'Creating New Product. Please wait for a minute.')
-        await dispatch(newProduct(form))
+        imgFiles.forEach(f => form.append("files", f))
+        if (price < 10) return toast.error('Price of product must be of min. Rs. 10')
+        if (price > 99999999) return toast.error('Price of product must be less than Rs 10 crore')
+        if (stock > 9999) return toast.error('Stock must be less than 10,000')
+        if (stock < 0) return toast.error('Stock must not be negative')
+        if (category === '') return toast.error('Please select a category')
+        if (images.length === 0) return toast.error('Please upload image(s)')
+        await newProduct('Creating New Product', form)
         navigate('/dashboard')
     }
     const categories = ['Laptop', 'Phone', 'Clothes', 'Shoes', 'Camera']
-    useEffect(() => {
-        dispatch(loadUser())
-    }, [dispatch])
-    useEffect(() => {
-        if (error) alert('error', setAlertType, error, setAlertMsg, setAlertVisibility, dispatch)
-    }, [dispatch, error])
     return (
         <>
             <MetaData title={"eCommerce"} />

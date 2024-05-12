@@ -20,6 +20,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
+    "react-hot-toast": "^2.4.1",
     "react-js-pagination": "^3.0.3",
     "react-redux": "^8.1.2",
     "react-responsive-carousel": "^3.2.23",
@@ -32,7 +33,6 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "proxy": "http://localhost:6300",
   "devDependencies": {
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",

@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid"
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import { useGetMyOrdersQuery } from '../../../redux/api/order'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
@@ -60,7 +60,7 @@ const MyOrders = () => {
     const [rows, setRows] = useState([])
     const { user } = useSelector(({ auth }) => auth)
     const { isError, data, error, isLoading } = useGetMyOrdersQuery()
-    useAlert([{ error, isError }])
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (data) setRows(data.orders.map(order => ({
             id: order._id,

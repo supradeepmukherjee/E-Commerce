@@ -7,12 +7,15 @@ import { CardCvcElement, CardExpiryElement, CardNumberElement, useElements, useS
 import axios from 'axios'
 import { State } from "country-state-city"
 import { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { newOrder } from '../../../Actions/Order'
-import useAlert from '../../../hooks/useAlert'
+import server from "../../../constant"
+import useErrors from '../../../hooks/useErrors'
+import useMutation from "../../../hooks/useMutation"
 import { useGetItemsQuery } from '../../../redux/api/cart'
-import { useGetMyOrdersQuery } from '../../../redux/api/order'
+import { useNewOrderMutation } from '../../../redux/api/order'
+import { useSecretKeyQuery } from "../../../redux/api/stripe"
 import { useGetShipInfoQuery } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
@@ -23,16 +26,20 @@ const Payment = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
-    const dispatch = useDispatch()
+    const [key, setKey] = useState('')
+    const { data: secret, isLoading: keyLoading } = useSecretKeyQuery()
+    useEffect(() => {
+        if (secret) setKey(secret.key)
+    }, [secret])
     const stripe = useStripe()
     const elements = useElements()
     const navigate = useNavigate()
-    const { error: userError, user, loading: userLoading } = useSelector(state => state.user)
-    const itemsQty = useSelector(state => state.user.user.cartItems)
+    const { user } = useSelector(({ auth }) => auth)
+    const itemsQty = useSelector(({ auth }) => auth.user.cartItems)
     const payBtn = useRef(null)
-    const { isLoading, data, isError, error } = useGetMyOrdersQuery()
+    const { isError, isLoading, data, error } = useGetShipInfoQuery()
     const { isLoading: itemsLoading, data: itemsData, isError: itemsIsError, error: itemsError } = useGetItemsQuery()
-    const { isError: shipIsError, isLoading: shipLoading, data: shipData, error: shipError } = useGetShipInfoQuery()
+    const [newOrder, orderLoading] = useMutation(useNewOrderMutation)
     const [shipInfo, setShipInfo] = useState({})
     const [cartItems, setCartItems] = useState([])
     let gTotal = 0
@@ -74,12 +81,20 @@ const Payment = () => {
     const submitHandler = async e => {
         e.preventDefault()
         payBtn.current.disabled = true
+        const id = toast.loading('Processing payment. Please don\'t refresh or close the tab or press back button.')
         try {
-            useAlert([], 'info', 'Processing payment. Please don\'t refresh or close the tab or press back button.')
-            const { data } = await axios.post(`/api/v1/processpayment`, { amt: Math.round(total * 100) }, { headers: { 'Content-Type': 'application/json' } })
+            const { data } = await axios.post(`${server}/payment/processpayment`,
+                { amt: Math.round(total * 100) },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${key}`,
+                    },
+                    withCredentials: true
+                })
             const clientSecret = data.clientSecret
             if (!stripe || !elements) return
-            useAlert([], 'info', 'Processing payment. Please don\'t refresh or close the tab or press back button.')
+            toast.loading('Processing payment. Please don\'t refresh or close the tab or press back button.', { id })
             const result = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: {
                     card: elements.getElement(CardNumberElement),
@@ -98,37 +113,37 @@ const Payment = () => {
             })
             if (result.error) {
                 payBtn.current.disabled = false
-                useAlert([], 'error', result.error.message)
+                toast.error(result.error.message, { id })
             } else {
                 if (result.paymentIntent.status === 'succeeded') {
                     order.paymentInfo = {
                         id: result.paymentIntent.id,
                         status: result.paymentIntent.status
                     }
-                    useAlert([], 'info', 'Processing payment. Please don\'t refresh or close the tab or press back button.')
-                    await dispatch(newOrder(order))
+                    toast.error('Processing payment. Please don\'t refresh or close the tab or press back button.', { id })
+                    await newOrder('Placing Order', order)
                     navigate('/success')
                 } else {
-                    useAlert([], 'error', 'There\'s some issue while processing the payment. Please retry.')
+                    toast.error('There\'s some issue while processing the payment. Please retry.', { id })
                 }
             }
         } catch (err) {
             console.log(err)
             payBtn.current.disabled = false
+            toast.error('Something went wrong', { id })
         }
     }
     useEffect(() => {
-        if(shipData) setShipInfo(data.shipInfo)
-        if(itemsData) setCartItems(itemsData.items)
-    }, [data.shipInfo, dispatch, error, itemsData, shipData, shipError, userError])
-    useAlert([
+        if (data) setShipInfo(data.shipInfo)
+        if (itemsData) setCartItems(itemsData.items)
+    }, [data, itemsData])
+    useErrors([
         { error, isError },
         { error: itemsError, isError: itemsIsError },
-        { error: shipError, isError: shipIsError },
     ])
     return (
         <>
-            {isLoading || itemsLoading || shipLoading || userLoading ? <Loader /> : <>
+            {itemsLoading || isLoading ? <Loader /> : <>
                 <MetaData title={`PAYMENT`} />
                 <div className="steps">
                     <CheckoutSteps activeStep={1} />
@@ -154,6 +169,7 @@ const Payment = () => {
                             type="submit"
                             value={`Pay Rs. ${total}`}
                             ref={payBtn}
+                            disabled={orderLoading || keyLoading}
                             className='paymentFormBtn'
                         />
                     </form>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
 import useMutation from '../../../hooks/useMutation'
 import { useResetPasswordMutation } from '../../../redux/api/user'
 import { passwordValidator } from '../../../utils/validators'
@@ -16,13 +16,12 @@ const ResetPassword = () => {
     const formSubmit = async e => {
         e.preventDefault()
         let validationMsg = ''
-        if (pass === cpass) {
-            validationMsg = passwordValidator(pass) || ''
-            if (validationMsg !== '') return useAlert([], 'error', validationMsg)
-            await resetPassword('Resetting Password', { token, password: pass })
-            navigate('/registerlogin')
-        }
-        else return useAlert([], 'error', 'Passwords do not match')
+        if (pass !== cpass) return toast.error('Passwords don\'t match')
+        validationMsg = passwordValidator(pass) || ''
+        if (validationMsg !== '') return toast.error(validationMsg)
+        toast.dismiss()
+        await resetPassword('Resetting Password', { token, password: pass })
+        navigate('/registerlogin')
     }
     return (
         <>

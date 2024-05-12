@@ -3,7 +3,7 @@ import server from '../../constant'
 
 const api = createApi({
     reducerPath: 'cart',
-    baseQuery: fetchBaseQuery({ baseUrl: server }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${server}/user` }),
     tagTypes: ['cart'],
     endpoints: ({ mutation, query }) => ({
         addToCart: mutation({

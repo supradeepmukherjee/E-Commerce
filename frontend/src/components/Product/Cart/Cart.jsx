@@ -1,9 +1,10 @@
 import EmptyCart from '@mui/icons-material/RemoveShoppingCart'
 import { Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import useMutation from '../../../hooks/useMutation'
 import { useAddToCartMutation, useGetItemsQuery, useLazyGetItemsQuery, useRemoveItemMutation } from '../../../redux/api/cart'
 import { useLazyGetUserQuery } from '../../../redux/api/user'
@@ -19,7 +20,7 @@ const Cart = () => {
   }, []);
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const itemsQty = useSelector(state => state.user.user.cartItems)
+  const itemsQty = useSelector(({ auth }) => auth.user.cartItems)
   const [cartItems, setCartItems] = useState([])
   const { data, isLoading, isError, error } = useGetItemsQuery()
   const [addToCart, loading] = useMutation(useAddToCartMutation)
@@ -44,10 +45,8 @@ const Cart = () => {
   }
   const inc = async (id, qty, stock) => {
     const newQty = qty + 1
-    if (stock <= qty) {
-      useAlert([], 'error', 'Maximum Stock Quantity')
-      return
-    }
+    if (stock <= qty) return toast.error('Maximum Stock Quantity')
+    toast.dismiss()
     await addToCart('Decreasing Quantity', { id, newQty })
     getUser()
       .then(({ data }) => dispatch(userExists(data.user)))
@@ -62,7 +61,7 @@ const Cart = () => {
       .then(({ data }) => dispatch(userExists(data.user)))
       .catch(() => dispatch(userNotExists()))
   }
-  useAlert([{ error, isError }])
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (data) setCartItems(data.items)
   }, [data])
@@ -109,7 +108,7 @@ const Cart = () => {
                     <span className='value'>
                       {value}
                     </span>
-                    <button disabled={loading ||removeLoading} onClick={() => inc(item._id, value, item.stock)}>
+                    <button disabled={loading || removeLoading} onClick={() => inc(item._id, value, item.stock)}>
                       +
                     </button>
                   </div>

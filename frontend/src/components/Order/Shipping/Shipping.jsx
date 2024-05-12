@@ -7,12 +7,13 @@ import Transfer from '@mui/icons-material/TransferWithinAStation'
 import { Country, State } from "country-state-city"
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import useMutation from '../../../hooks/useMutation'
 import { useGetShipInfoQuery, useUpdateShipMutation } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import CheckoutSteps from '../CheckoutSteps'
+import toast from 'react-hot-toast'
 import './Shipping.css'
 
 const Shipping = () => {
@@ -29,13 +30,14 @@ const Shipping = () => {
   const [updateShip] = useMutation(useUpdateShipMutation)
   const formSubmit = async e => {
     e.preventDefault()
-    if (phone.length < 10 || phone.length > 10) return useAlert([], 'error', 'Phone No. must be of 10 digits')
-    if (pincode.length < 6 || pincode.length > 6) return useAlert([], 'error', 'Pincode must be of 6 digits')
+    if (phone.length < 10 || phone.length > 10) return toast.error('Phone No. must be of 10 digits')
+    if (pincode.length < 6 || pincode.length > 6) return toast.error('Pincode must be of 6 digits')
+    toast.dismiss()
     await updateShip('Updating Address...', { address, city, state, country, pincode, phone })
     navigate('/confirmorder')
   }
   const { isLoading, data, isError, error } = useGetShipInfoQuery()
-  useAlert([{ error, isError }])
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (data) {
       setAddress(data.shipInfo.address)

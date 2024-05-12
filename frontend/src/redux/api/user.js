@@ -3,7 +3,7 @@ import server from '../../constant'
 
 const api = createApi({
     reducerPath: 'user',
-    baseQuery: fetchBaseQuery({ baseUrl: server }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${server}/user` }),
     tagTypes: ['user', 'admin-user'],
     endpoints: ({ mutation, query }) => ({
         register: mutation({

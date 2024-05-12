@@ -3,7 +3,7 @@ import Mail from '@mui/icons-material/MailOutline'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import toast from 'react-hot-toast'
 import useMutation from '../../../hooks/useMutation'
 import { useUpdateProfileMutation } from '../../../redux/api/user'
 import { nameValidator } from '../../../utils/validators'
@@ -39,11 +39,12 @@ const UpdateProfile = () => {
     if (user.name !== sUser.name) {
       let validationMsg = ''
       validationMsg = nameValidator(user.name) || ''
-      if (validationMsg !== '') return useAlert([], 'error', validationMsg)
+      if (validationMsg !== '') return toast.error(validationMsg)
       formData.append('name', user.name)
     }
     if (user.email !== sUser.email) formData.append('email', user.email)
     if (user.chavi !== sUser.chavi.url) formData.append('chavi', chaviFile)
+    toast.dismiss()
     await updateProfile('Updating Profile Details', formData)
     navigate('/account')
   }

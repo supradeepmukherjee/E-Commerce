@@ -3,7 +3,7 @@ import { Button, Typography } from '@mui/material'
 import { Country, State } from "country-state-city"
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import useMutation from '../../../hooks/useMutation'
 import { useEditOrderMutation, useGetOneOrderQuery } from '../../../redux/api/order'
 import Loader from '../../Loader/Loader'
@@ -26,7 +26,7 @@ const ProcessOrder = () => {
         await editOrder('Updating Order Status', { id, status })
         navigate('/adminorders')
     }
-    useAlert([{ error, isError }])
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (data) setOrder(data.order)
     }, [data])

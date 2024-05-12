@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Carousel } from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { useParams } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import useMutation from '../../../hooks/useMutation'
 import { useAddToCartMutation } from '../../../redux/api/cart'
 import { useLazyProductDetailsQuery, useProductDetailsQuery, useSubmitReviewMutation } from '../../../redux/api/product'
@@ -47,8 +47,8 @@ const ProductDetails = () => {
       .then(({ data }) => setProduct(data.product))
       .catch(err => console.log(err))
   }
-  const { data, isLoading, error, isError, refetch } = useProductDetailsQuery()
-  useAlert([{ error, isError }])
+  const { data, isLoading, error, isError, refetch } = useProductDetailsQuery(id)
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (data) setProduct(data.product)
   }, [data])
@@ -59,7 +59,7 @@ const ProductDetails = () => {
           <MetaData title={product?.name} />
           <div className="">
             <Carousel>
-              {product?.images.map((img, i) => {
+              {product?.images?.map((img, i) => {
                 return (
                   <div className="" key={i}>
                     <img src={img.url} className='carouselImg' alt="" />
@@ -135,7 +135,7 @@ const ProductDetails = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        {product?.reviews[0] ? (
+        {product?.reviews?.length > 0 ? (
           <div className="reviews">
             {product?.reviews.map(review => <ReviewCard key={review._id} review={review} role={user?.role} userID={user?._id} productID={id} refetch={refetch} />)}
           </div>

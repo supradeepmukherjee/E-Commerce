@@ -29,12 +29,12 @@ app.use(json({ limit: '50mb' }))
 app.use(cookieParser())
 app.use(urlencoded({ limit: '50mb', extended: true }))
 
-app.use('/api/v1', product)
-app.use('/api/v1', user)
-app.use('/api/v1', payment)
+app.use('/api/v1/product', product)
+app.use('/api/v1/user', user)
+app.use('/api/v1/payment', payment)
 
 app.use(isAuthenticated)
-app.use('/api/v1', order)
+app.use('/api/v1/order', order)
 
 app.use(errorMiddleware)
 

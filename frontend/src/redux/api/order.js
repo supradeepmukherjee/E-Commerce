@@ -3,7 +3,7 @@ import server from '../../constant'
 
 const api = createApi({
     reducerPath: 'order',
-    baseQuery: fetchBaseQuery({ baseUrl: server }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${server}/order` }),
     tagTypes: ['order', 'admin-order'],
     endpoints: ({ mutation, query }) => ({
         newOrder: mutation({

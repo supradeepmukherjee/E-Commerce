@@ -5,7 +5,7 @@ import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material'
 import { DataGrid } from "@mui/x-data-grid"
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import useAlert from "../../../hooks/useAlert"
+import useErrors from "../../../hooks/useErrors"
 import useMutation from "../../../hooks/useMutation"
 import { useDelProductMutation, useGetMyProductsQuery, useLazyGetMyProductsQuery } from '../../../redux/api/product'
 import Loader from '../../Loader/Loader'
@@ -100,7 +100,7 @@ const ProductList = () => {
             }))))
             .catch(err => console.log(err))
     }
-    useAlert([{ error, isError }])
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (data) setRows(data.products.map(product => ({
             id: product._id,

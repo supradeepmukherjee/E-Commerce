@@ -3,7 +3,7 @@ import { Chart, registerables } from "chart.js"
 import { useEffect, useState } from 'react'
 import { Doughnut, Line } from "react-chartjs-2"
 import { Link } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import { useGetAdminOrdersQuery } from '../../../redux/api/order'
 import { useGetMyProductsQuery } from '../../../redux/api/product'
 import { useAllUsersQuery } from '../../../redux/api/user'
@@ -44,7 +44,7 @@ const Dashboard = () => {
       }
     ]
   }
-  useAlert([
+  useErrors([
     { isError, error },
     { isError: usersIsError, error: usersError },
     { isError: ordersIsError, error: ordersError },

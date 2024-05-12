@@ -2,16 +2,17 @@ import { Product } from '../models/Product.js'
 import cloudinary from 'cloudinary'
 import { tryCatch } from "../middlewares/error.js"
 import { ErrorHandler } from "../utils/utility.js"
-import { uploadToCloudinary } from '../utils/cloudinary.js'
+import { delCloudinaryFiles, uploadToCloudinary } from '../utils/cloudinary.js'
 
 const createProduct = tryCatch(async (req, res) => { //admin
+    const { name, price, description, category, stock } = req.body
     const files = req.files || []
     if (files.length < 1) return next(new ErrorHandler(400, 'Please provide attachments'))
     let nonEmptyFiles = []
     files.forEach(f => {
         if (f.size > 0) nonEmptyFiles.push(f)
     })
-    if (nonEmptyFiles.length < 1) return res.status(400).json({ success: false, msg: 'Empty files cannot be sent' })
+    if (nonEmptyFiles.length < 1) return next(new ErrorHandler(400, 'Empty files cannot be sent'))
     let imgs = []
     const imgsResult = await uploadToCloudinary(nonEmptyFiles, 'Products')
     for (let i = 0; i < imgsResult.length; i++) {
@@ -20,10 +21,16 @@ const createProduct = tryCatch(async (req, res) => { //admin
             url: imgsResult[i].url
         })
     }
-    req.body.images = imgs
-    req.body.user = req.user._id
-    const product = await Product.create(req.body)
-    res.status(201).json({ product, success: true })
+    const product = await Product.create({
+        name,
+        price,
+        description,
+        category,
+        stock,
+        user: req.user._id,
+        images: imgs
+    })
+    res.status(201).json({ product, success: true, msg: 'Product Created Successfully' })
 })
 
 const getAllProducts = tryCatch(async (req, res) => {
@@ -79,30 +86,34 @@ const productDetails = tryCatch(async (req, res) => {
 })
 
 const updateProduct = tryCatch(async (req, res) => { //admin
+    const { name, price, description, category, stock } = req.body
+    const files = req.files || []
+    if (files.length < 1) return next(new ErrorHandler(400, 'Please provide attachments'))
+    let nonEmptyFiles = []
+    files.forEach(f => {
+        if (f.size > 0) nonEmptyFiles.push(f)
+    })
+    if (nonEmptyFiles.length < 1) return next(new ErrorHandler(400, 'Empty files cannot be sent'))
     let product = await Product.findById(req.params.id)
-    if (!product) return next(new ErrorHandler(404, 'Product not found'))
     let images = []
-    if (typeof req.body.images === 'string') images.push(req.body.images)
-    else images = req.body.images
-    if (images !== undefined) {
-        for (let i = 0; i < product.images.length; i++) await cloudinary.v2.uploader.destroy(product.images[i].public_id)
-    }
-    let imagesLink = []
-    for (let i = 0; i < images.length; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i], {
-            folder: 'Products',
-            width: 480,
-            height: 360,
-            crop: 'scale'
-        })
-        imagesLink.push({
-            public_id: result.public_id,
-            url: result.secure_url
+    let toBeDeleted = []
+    if (!product) return next(new ErrorHandler(404, 'Product not found'))
+    for (let i = 0; i < product.images.length; i++) toBeDeleted.push(product.images[i].public_id)
+    const [imgsResult] = await Promise.all([
+        uploadToCloudinary(nonEmptyFiles, 'Products'),
+        delCloudinaryFiles(toBeDeleted)
+    ])
+    for (let i = 0; i < imgsResult.length; i++) {
+        images.push({
+            public_id: imgsResult[i].id,
+            url: imgsResult[i].url
         })
     }
-    req.body.images = imagesLink
-    product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-    res.status(200).json({ product, success: true })
+    product = await Product.findByIdAndUpdate(
+        req.params.id,
+        { name, price, description, category, stock, images },
+        { new: true, runValidators: true })
+    res.status(200).json({ product, success: true, msg: 'Product Updated Successfully' })
 })
 
 const delProduct = tryCatch(async (req, res) => { //admin
@@ -142,12 +153,6 @@ const review = tryCatch(async (req, res) => {
     res.status(200).json({ product, success: true })
 })
 
-const reviewsOfProduct = tryCatch(async (req, res) => {
-    const product = await Product.findById(req.parmas.id)
-    if (!product) return next(new ErrorHandler(404, 'Product not found'))
-    res.status(200).json({ reviews: product.reviews, success: true })
-})
-
 const delReview = tryCatch(async (req, res) => {
     const { productID } = req.query
     const product = await Product.findById(productID)
@@ -166,4 +171,4 @@ const delReview = tryCatch(async (req, res) => {
     res.status(200).json({ msg: 'Review deleted', success: true })
 })
 
-export { createProduct, delProduct, delReview, getAllProducts, getProducts, productDetails, review, reviewsOfProduct, updateProduct }
+export { createProduct, delProduct, delReview, getAllProducts, getProducts, productDetails, review, updateProduct }

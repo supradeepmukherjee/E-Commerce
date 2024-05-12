@@ -2,7 +2,7 @@ import { Typography } from '@mui/material'
 import { Country, State } from "country-state-city"
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import { useGetOneOrderQuery } from '../../../redux/api/order'
 import Error404 from '../../Error404/Error404'
 import Loader from '../../Loader/Loader'
@@ -16,7 +16,7 @@ const OrderDetails = () => {
     const { id } = useParams()
     const [order, setOrder] = useState({})
     const { loading, data, error, isError } = useGetOneOrderQuery(id)
-    useAlert([{ error, isError }])
+    useErrors([{ error, isError }])
     useEffect(() => {
         if(data) setOrder(data.order)
     }, [data])

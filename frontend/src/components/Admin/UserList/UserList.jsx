@@ -2,7 +2,7 @@ import Edit from "@mui/icons-material/Edit"
 import { DataGrid } from "@mui/x-data-grid"
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import useAlert from "../../../hooks/useAlert"
+import useErrors from "../../../hooks/useErrors"
 import { useAllUsersQuery } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
@@ -60,7 +60,7 @@ const UserList = () => {
   ]
   const [rows, setRows] = useState([])
   const { data, isLoading, error, isError } = useAllUsersQuery()
-  useAlert([{ isError, error }])
+  useErrors([{ isError, error }])
   useEffect(() => {
     if (data) setRows(data.users.map(user => ({
       id: user._id,

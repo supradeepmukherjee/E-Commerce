@@ -1,10 +1,11 @@
 import { Router } from 'express'
-import { processPayment, apiKey } from '../controllers/payment.js'
+import { processPayment, apiKey, secretKey } from '../controllers/payment.js'
 import { isAuthenticated } from '../middlewares/auth.js'
 
 const app = Router()
 
-app.post('/processpayment', isAuthenticated, processPayment)
 app.get('/key', apiKey)
+app.get('/secret-key', secretKey)
+app.post('/processpayment', isAuthenticated, processPayment)
 
 export default app

@@ -3,7 +3,7 @@ import { Country, State } from "country-state-city"
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import { useGetItemsQuery } from '../../../redux/api/cart'
 import { useGetShipInfoQuery } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
@@ -21,7 +21,7 @@ const ConfirmOrder = () => {
     const [shipInfo, setShipInfo] = useState({})
     const [cartItems, setCartItems] = useState([])
     let gTotal = 0
-    cartItems.map(item => {
+    cartItems?.map(item => {
         let value, sTotal
         for (let i = 0; i < itemsQty.length; i++) {
             if (item._id === itemsQty[i].item) value = itemsQty[i].qty
@@ -34,13 +34,13 @@ const ConfirmOrder = () => {
     const total = gTotal + tax + shippingCharges
     const { isLoading, data, error, isError } = useGetShipInfoQuery()
     const { data: itemsData, isLoading: itemsLoading, error: itemsError, isError: itemsIsError } = useGetItemsQuery()
-    useAlert([
+    useErrors([
         { error, isError },
         { error: itemsError, isError: itemsIsError },
     ])
     useEffect(() => {
         if (data) setShipInfo(data.shipInfo)
-        if (itemsData) setCartItems(data.cartItems)
+        if (itemsData) setCartItems(itemsData.items)
     }, [data, itemsData])
     return (
         <>
@@ -78,7 +78,7 @@ const ConfirmOrder = () => {
                                             Address:
                                         </p>
                                         <span>
-                                            {shipInfo && `${shipInfo.address}, ${shipInfo.city}, ${shipInfo.pincode}, ${State.getStateByCode(shipInfo.state).name}, ${Country.getCountryByCode(shipInfo.country).name}`}
+                                            {shipInfo && `${shipInfo.address}, ${shipInfo.city}, ${shipInfo.pincode}, ${State.getStateByCode(shipInfo.state)?.name}, ${Country.getCountryByCode(shipInfo.country)?.name}`}
                                         </span>
                                     </div>
                                 </div>

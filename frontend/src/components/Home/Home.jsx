@@ -1,7 +1,7 @@
 import Scroll from '@mui/icons-material/KeyboardDoubleArrowDown';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useAlert from '../../hooks/useAlert';
+import useErrors from '../../hooks/useErrors';
 import logo from '../../images/logo.png';
 import { useGetProductsQuery } from '../../redux/api/product';
 import Loader from '../Loader/Loader';
@@ -14,7 +14,7 @@ const Home = () => {
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
     const { data, isError, error, isLoading } = useGetProductsQuery({})
-    useAlert([{ error, isError }])
+    useErrors([{ error, isError }])
     return (
         <>
             {isLoading ? <Loader /> : <>

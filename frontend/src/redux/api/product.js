@@ -3,7 +3,7 @@ import server from '../../constant'
 
 const api = createApi({
     reducerPath: 'product',
-    baseQuery: fetchBaseQuery({ baseUrl: server }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${server}/product` }),
     tagTypes: ['product', 'admin-product', 'review'],
     endpoints: ({ mutation, query }) => ({
         newProduct: mutation({
@@ -43,10 +43,10 @@ const api = createApi({
             providesTags: ['product']
         }),
         editProduct: mutation({
-            query: ({ id, details }) => ({
+            query: ({ id, data }) => ({
                 url: `/admin/product/${id}`,
                 method: `PUT`,
-                body: details,//file
+                body: data,//file
                 credentials: 'include'
             }),
             invalidatesTags: ['admin-product', 'product']

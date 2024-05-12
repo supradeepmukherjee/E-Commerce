@@ -2,7 +2,7 @@ import Role from '@mui/icons-material/VerifiedUser'
 import { Button } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import useMutation from '../../../hooks/useMutation'
 import { useGetUserProfileQuery, useUpdateRoleMutation } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
@@ -25,7 +25,7 @@ const UpdateRole = () => {
         navigate('/adminusers')
     }
     const { isLoading, data, error, isError } = useGetUserProfileQuery(id)
-    useAlert([{ error, isError }])
+    useErrors([{ error, isError }])
     useEffect(() => {
         if (data) setUser(data.user)
     }, [data])

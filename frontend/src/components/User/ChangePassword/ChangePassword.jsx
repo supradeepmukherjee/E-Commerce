@@ -1,9 +1,9 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
-import { passwordValidator } from '../../../utils/validators'
-import useAlert from '../../../hooks/useAlert'
 import useMutation from '../../../hooks/useMutation'
 import { useChangePasswordMutation } from '../../../redux/api/user'
+import { passwordValidator } from '../../../utils/validators'
 import MetaData from '../../MetaData'
 import './ChangePassword.css'
 
@@ -13,16 +13,15 @@ const ChangePassword = () => {
     const [cPass, setCPass] = useState('')
     const navigate = useNavigate()
     const [changePassword, pLoading] = useMutation(useChangePasswordMutation)
-    const formSubmit =async e => {
+    const formSubmit = async e => {
         e.preventDefault()
         let validationMsg = ''
-        if (newP === cPass) {
-            validationMsg = passwordValidator(newP) || ''
-            if (validationMsg !== '') return useAlert([], 'error', validationMsg)
-            await changePassword('Changing Password. Please wait',{old, newP, cPass})
-            navigate('/account')
-        }
-        else useAlert([], 'error', 'Passwords don\'t match')
+        if (newP !== cPass) return toast.error('Passwords don\'t match')
+        validationMsg = passwordValidator(newP) || ''
+        if (validationMsg !== '') return toast.error(validationMsg)
+        toast.dismiss()
+        await changePassword('Changing Password. Please wait', { old, newP, cPass })
+        navigate('/account')
     }
     return (
         <>

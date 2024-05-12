@@ -2,26 +2,28 @@ import Face from '@mui/icons-material/Face'
 import Lock from '@mui/icons-material/LockOutlined'
 import Mail from '@mui/icons-material/MailOutline'
 import { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { nameValidator, passwordValidator } from '../../../utils/validators'
-import useAlert from '../../../hooks/useAlert'
 import useMutation from '../../../hooks/useMutation'
-import { useGetUserQuery, useLoginMutation } from '../../../redux/api/user'
+import { useLazyGetUserQuery, useLoginMutation, useRegisterMutation } from '../../../redux/api/user'
+import { userExists, userNotExists } from '../../../redux/reducers/auth'
+import { nameValidator, passwordValidator } from '../../../utils/validators'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import './RegisterLogin.css'
 
 const RegisterLogin = () => {
-  const { userRedux, loading } = useSelector(({ auth }) => auth)
+  const { user: userRedux, loading } = useSelector(({ auth }) => auth)
+  const dispatch = useDispatch()
   const loginTab = useRef(null)
   const registerTab = useRef(null)
   const switcherTab = useRef(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { refetch } = useGetUserQuery()
+  const [getUser] = useLazyGetUserQuery()
   const [loginUser, loginLoading] = useMutation(useLoginMutation)
-  const [registerUser, registerLoading] = useMutation(useLoginMutation)
+  const [registerUser, registerLoading] = useMutation(useRegisterMutation)
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -60,20 +62,28 @@ const RegisterLogin = () => {
   const loginSubmit = async e => {
     e.preventDefault()
     await loginUser('Logging in', { email, password })
-    refetch()
+    getUser()
+      .then(({ data }) => dispatch(userExists(data.user)))
+      .catch(() => dispatch(userNotExists()))
+    navigate('/')
   }
   const registerSubmit = async e => {
     e.preventDefault()
+    console.log('registering')
     let validationMsg = ''
     validationMsg = nameValidator(user.name) || passwordValidator(user.password) || ''
-    if (validationMsg !== '') return useAlert([], 'error', validationMsg)
+    if (validationMsg !== '') return toast.error(validationMsg)
+    if (!chaviFile) return toast.error('Please upload Chavi')
     const formData = new FormData()
     formData.append('chavi', chaviFile)
     formData.append('name', user.name)
     formData.append('email', user.email)
     formData.append('password', user.password)
     await registerUser('Registering', formData)
-    refetch()
+    getUser()
+      .then(({ data }) => dispatch(userExists(data.user)))
+      .catch(() => dispatch(userNotExists()))
+    navigate('/')
   }
   useEffect(() => {
     if (userRedux) navigate(redirect)

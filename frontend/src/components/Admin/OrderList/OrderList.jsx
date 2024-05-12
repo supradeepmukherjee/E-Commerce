@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import useAlert from '../../../hooks/useAlert'
+import useErrors from '../../../hooks/useErrors'
 import useMutation from '../../../hooks/useMutation'
 import { useDelOrderMutation, useGetAdminOrdersQuery, useLazyGetAdminOrdersQuery } from '../../../redux/api/order'
 import Loader from '../../Loader/Loader'
@@ -88,7 +88,7 @@ const OrderList = () => {
       }))))
       .catch(err => console.log(err))
   }
-  useAlert([{ error, isError }])
+  useErrors([{ error, isError }])
   useEffect(() => {
     if (data) setRows(data.orders.map(order => ({
       id: order._id,

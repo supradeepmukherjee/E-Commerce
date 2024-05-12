@@ -6,16 +6,19 @@ import Cart from '@mui/icons-material/ShoppingCart';
 import { Backdrop, Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
+import axios from 'axios';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../Actions/User';
+import server from '../../constant';
+import { userNotExists } from '../../redux/reducers/auth';
 import './Header.css';
 
 const UserOptions = ({ user, changeTab }) => {
     const [open, setOpen] = useState(false)
     const [boxOpen, setBoxOpen] = useState(false)
-    const itemsQty = useSelector(state => state.user.user.cartItems)
+    const itemsQty = useSelector(({ auth }) => auth.user.cartItems)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const dashboard = () => {
@@ -36,7 +39,14 @@ const UserOptions = ({ user, changeTab }) => {
     }
     const boxToggle = () => boxOpen ? setBoxOpen(false) : setBoxOpen(true)
     const submitHandler = async () => {
-        await dispatch(logout())
+        try {
+            const { data } = await axios.get(`${server}/user/logout`, { withCredentials: true })
+            dispatch(userNotExists())
+            toast.success(data.msg)
+        } catch (err) {
+            console.log(err)
+            toast.error(err?.response?.data?.msg || 'Something went wrong')
+        }
         navigate('/')
     }
     const options = [
