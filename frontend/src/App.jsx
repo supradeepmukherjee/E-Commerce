@@ -10,7 +10,6 @@ import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 import Loader from "./components/Loader/Loader";
 import Payment from './components/Order/Payment/Payment';
-import { useKeyQuery } from "./redux/api/stripe";
 import { useLazyGetUserQuery } from "./redux/api/user";
 import { userExists, userNotExists } from './redux/reducers/auth';
 const RegisterLogin = lazy(() => import('./components/User/RegisterLogin/RegisterLogin'));
@@ -42,17 +41,13 @@ const About = lazy(() => import('./components/About/About'));
 const Contact = lazy(() => import('./components/Contact/Contact'));
 const Error404 = lazy(() => import('./components/Error404/Error404'));
 
+const key = import.meta.env.VITE_STRIPE
 function App() {
   const dispatch = useDispatch()
   const { user } = useSelector(({ auth }) => auth)
   const [tab, setTab] = useState('/')
   const [isAdmin, setIsAdmin] = useState(false)
-  const [key, setKey] = useState('')
   const [getUser] = useLazyGetUserQuery()
-  const { data } = useKeyQuery()
-  useEffect(() => {
-    if (data) setKey(data.key)
-  }, [data])
   useEffect(() => {
     webFont.load({ google: { families: ['Roboto', 'Droid Sans', 'Chilanka'] } })
     getUser()
@@ -69,13 +64,11 @@ function App() {
         <Suspense fallback={<Loader />}>
           <UserOptions changeTab={setTab} user={user} />
         </Suspense>}
-      {key &&
-        <Elements stripe={loadStripe(key)}>
-          <Routes>
-            <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
-          </Routes>
-        </Elements>
-      }
+      <Elements stripe={loadStripe(key)}>
+        <Routes>
+          <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
+        </Routes>
+      </Elements>
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route exact path='/' element={<Home />} />

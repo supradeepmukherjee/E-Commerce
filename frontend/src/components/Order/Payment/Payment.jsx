@@ -15,22 +15,17 @@ import useErrors from '../../../hooks/useErrors'
 import useMutation from "../../../hooks/useMutation"
 import { useGetItemsQuery } from '../../../redux/api/cart'
 import { useNewOrderMutation } from '../../../redux/api/order'
-import { useSecretKeyQuery } from "../../../redux/api/stripe"
 import { useGetShipInfoQuery } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import CheckoutSteps from '../CheckoutSteps'
 import './Payment.css'
 
+const key = import.meta.env.VITE_STRIPE
 const Payment = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
-    const [key, setKey] = useState('')
-    const { data: secret, isLoading: keyLoading } = useSecretKeyQuery()
-    useEffect(() => {
-        if (secret) setKey(secret.key)
-    }, [secret])
     const stripe = useStripe()
     const elements = useElements()
     const navigate = useNavigate()
@@ -169,7 +164,7 @@ const Payment = () => {
                             type="submit"
                             value={`Pay Rs. ${total}`}
                             ref={payBtn}
-                            disabled={orderLoading || keyLoading}
+                            disabled={orderLoading}
                             className='paymentFormBtn'
                         />
                     </form>

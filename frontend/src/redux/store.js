@@ -3,7 +3,6 @@ import cart from './api/cart';
 import order from './api/order';
 import product from './api/product';
 import user from './api/user';
-import stripe from './api/stripe';
 import authSlice from './reducers/auth';
 
 const store = configureStore({
@@ -12,7 +11,6 @@ const store = configureStore({
         [order.reducerPath]: order.reducer,
         [product.reducerPath]: product.reducer,
         [user.reducerPath]: user.reducer,
-        [stripe.reducerPath]: stripe.reducer,
         [authSlice.name]: authSlice.reducer,
     },
     middleware: d => d().concat([
@@ -20,7 +18,6 @@ const store = configureStore({
         cart.middleware,
         order.middleware,
         product.middleware,
-        stripe.middleware
     ]),
     devTools: import.meta.env.NODE_ENV !== 'production',
 })
