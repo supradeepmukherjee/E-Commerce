@@ -37,7 +37,7 @@ const Products = () => {
                     setResultPerPg(data.resultPerPg)
                 })
                 .catch(err => console.log(err))
-                .finally(setLoading(true))
+                .finally(setLoading(false))
         }, 1200);
         return () => clearTimeout(wait)
     }, [categoryOption, currentPg, getProducts, keyword, price, rating])

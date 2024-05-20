@@ -1,5 +1,5 @@
 const nameValidator = name => {
-    if (!(/^[a-zA-Z]/.test(name))) return 'Please enter correct name'
+    if (!(/^[a-zA-Z\s-]+$/.test(name))) return 'Please enter correct name'
 }
 
 const passwordValidator = p => {

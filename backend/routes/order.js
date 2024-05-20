@@ -1,10 +1,9 @@
 import { Router } from 'express'
-import { newOrder, singleOrder, myOrders, allOrders, delOrder, updateOrderStatus } from '../controllers/order.js'
+import { allOrders, delOrder, myOrders, singleOrder, updateOrderStatus } from '../controllers/order.js'
 import { authoriseRoles } from '../middlewares/auth.js'
 
 const app = Router()
 
-app.post('/neworder', newOrder)
 app.get('/myorders', myOrders)
 app.get('/order/:id', singleOrder)
 

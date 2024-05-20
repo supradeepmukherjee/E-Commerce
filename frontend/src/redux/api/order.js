@@ -6,15 +6,6 @@ const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: `${server}/order` }),
     tagTypes: ['order', 'admin-order'],
     endpoints: ({ mutation, query }) => ({
-        newOrder: mutation({
-            query: order => ({
-                url: `/neworder`,
-                method: `POST`,
-                body: order,
-                credentials: 'include'
-            }),
-            invalidatesTags: ['order', 'admin-order']
-        }),
         delOrder: mutation({
             query: id => ({
                 url: `/admin/delorder/${id}`,

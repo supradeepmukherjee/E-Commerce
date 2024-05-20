@@ -1,5 +1,3 @@
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,7 +39,6 @@ const About = lazy(() => import('./components/About/About'));
 const Contact = lazy(() => import('./components/Contact/Contact'));
 const Error404 = lazy(() => import('./components/Error404/Error404'));
 
-const key = import.meta.env.VITE_STRIPE
 function App() {
   const dispatch = useDispatch()
   const { user } = useSelector(({ auth }) => auth)
@@ -64,11 +61,6 @@ function App() {
         <Suspense fallback={<Loader />}>
           <UserOptions changeTab={setTab} user={user} />
         </Suspense>}
-      <Elements stripe={loadStripe(key)}>
-        <Routes>
-          <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
-        </Routes>
-      </Elements>
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route exact path='/' element={<Home />} />
@@ -87,6 +79,7 @@ function App() {
           <Route exact path='/cart' element={user ? <Cart /> : <RegisterLogin />} />
           <Route exact path='/shipping' element={user ? <Shipping /> : <RegisterLogin />} />
           <Route exact path='/confirmorder' element={user ? <ConfirmOrder /> : <RegisterLogin />} />
+          <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
           <Route exact path='/success' element={user ? <Success /> : <RegisterLogin />} />
           <Route exact path='/myorders' element={user ? <Orders /> : <RegisterLogin />} />
           <Route exact path='/order/:id' element={user ? <OrderDetails /> : <RegisterLogin />} />
@@ -108,4 +101,3 @@ function App() {
 }
 
 export default App;
-// ask others if they are facing font problem

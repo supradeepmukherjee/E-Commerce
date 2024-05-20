@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import useErrors from '../../../hooks/useErrors'
 import { useGetOneOrderQuery } from '../../../redux/api/order'
-import Error404 from '../../Error404/Error404'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import './OrderDetails.css'
@@ -18,16 +17,16 @@ const OrderDetails = () => {
     const { loading, data, error, isError } = useGetOneOrderQuery(id)
     useErrors([{ error, isError }])
     useEffect(() => {
-        if(data) setOrder(data.order)
+        if (data) setOrder(data.order)
     }, [data])
     return (
         loading ? <Loader /> :
-            (data?.order ? <>
+            <>
                 <MetaData title={`ORDER DETAILS`} />
                 <div className="orderDetails">
                     <div className="orderDetailsContainer">
                         <Typography component={'h1'}>
-                            Order #{order && order._id}
+                            Order #{order?._id}
                         </Typography>
                         <Typography>
                             Shipping Info
@@ -38,7 +37,7 @@ const OrderDetails = () => {
                                     Name:
                                 </p>
                                 <span>
-                                    {order && order.user.name}
+                                    {order?.user?.name}
                                 </span>
                             </div>
                             <div className="">
@@ -46,7 +45,7 @@ const OrderDetails = () => {
                                     Contact No.:
                                 </p>
                                 <span>
-                                    {order && order.shippingInfo.phone}
+                                    {order?.shippingInfo?.phone}
                                 </span>
                             </div>
                             <div className="">
@@ -54,7 +53,7 @@ const OrderDetails = () => {
                                     Address:
                                 </p>
                                 <span>
-                                    {order && `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.pincode}, ${State.getStateByCode(order.shippingInfo.state).name}, ${Country.getCountryByCode(order.shippingInfo.country).name}`}
+                                    {order?.shippingInfo?.address}, {order?.shippingInfo?.city}, {order?.shippingInfo?.pincode}, {State.getStateByCode(order?.shippingInfo?.state)?.name}, {Country.getCountryByCode(order?.shippingInfo?.country)?.name}
                                 </span>
                             </div>
                         </div>
@@ -63,16 +62,19 @@ const OrderDetails = () => {
                         </Typography>
                         <div className="orderDetailsContainerBox">
                             <div className="">
-                                <p className={order && order.paymentInfo.status === 'succeeded' ? 'green' : 'red'}>
-                                    {order && order.paymentInfo.status === 'succeeded' ? 'PAID' : 'PAYMENT SUCCESSFUL'}
+                                <p>
+                                    Status: 
                                 </p>
+                                <span className={order?.paymentInfo?.status === 'Successful' ? 'green' : 'red'}>
+                                    {order?.paymentInfo?.status}
+                                </span>
                             </div>
                             <div className="">
                                 <p>
                                     Amount:
                                 </p>
                                 <span>
-                                    Rs. {order && order.amt}
+                                    Rs. {order?.amt}
                                 </span>
                             </div>
                         </div>
@@ -81,8 +83,8 @@ const OrderDetails = () => {
                         </Typography>
                         <div className="orderDetailsContainerBox">
                             <div className="">
-                                <p className={order && order.orderStatus === 'Delivered' ? 'green' : 'red'}>
-                                    {order && order.orderStatus}
+                                <p className={order?.orderStatus === 'Delivered' ? 'green' : 'red'}>
+                                    {order?.orderStatus}
                                 </p>
                             </div>
                         </div>
@@ -92,15 +94,15 @@ const OrderDetails = () => {
                             Order Items:
                         </Typography>
                         <div className="orderDetailsItemsContainer">
-                            {order && order.orderedItems.map(item => {
+                            {order?.orderedItems?.map(({ product, name, img, price, qty }) => {
                                 return (
-                                    <div className="" key={item.product}>
-                                        <img src={item.img} alt={item.name} />
-                                        <Link to={`/product/${item.product}`}>
-                                            {item.name}
+                                    <div className="" key={product}>
+                                        <img src={img} alt={name} />
+                                        <Link to={`/product/${product}`}>
+                                            {name}
                                         </Link>
                                         <span>
-                                            Rs. {item.price} X {item.qty} = <b>Rs. {item.qty * item.price}</b>
+                                            Rs. {price} X {qty} = <b>Rs. {qty * price}</b>
                                         </span>
                                     </div>
                                 )
@@ -109,8 +111,6 @@ const OrderDetails = () => {
                     </div>
                 </div>
             </>
-                :
-                <Error404 text='Order' />)
     )
 }
 

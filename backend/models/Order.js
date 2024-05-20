@@ -60,19 +60,15 @@ const orderSchema = new Schema({
         required: true
     },
     paymentInfo: {
-        id: {
-            type: String,
-            required: true
-        },
+        paymentID: String,
+        orderID: String,
         status: {
             type: String,
-            required: true
+            required: true,
+            default: 'Pending'
         },
     },
-    paidAt: {
-        type: Date,
-        required: true
-    },
+    paidAt: Date,
     itemsSubtotal: {
         type: Number,
         default: 0,
@@ -102,7 +98,7 @@ const orderSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
 })
 
 export const Order = mongoose.models.Order || model('Order', orderSchema)

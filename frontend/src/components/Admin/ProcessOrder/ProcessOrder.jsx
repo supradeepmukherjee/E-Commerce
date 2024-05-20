@@ -50,7 +50,7 @@ const ProcessOrder = () => {
                                         Name:
                                     </p>
                                     <span>
-                                        {order?.user.name}
+                                        {order?.user?.name}
                                     </span>
                                 </div>
                                 <div className="">
@@ -58,7 +58,7 @@ const ProcessOrder = () => {
                                         Contact No.:
                                     </p>
                                     <span>
-                                        {order?.shippingInfo.phone}
+                                        {order?.shippingInfo?.phone}
                                     </span>
                                 </div>
                                 <div className="">
@@ -66,7 +66,7 @@ const ProcessOrder = () => {
                                         Address:
                                     </p>
                                     <span>
-                                        {order?.shippingInfo.address}, {order?.shippingInfo.city}, {order?.shippingInfo.pincode}, {State.getStateByCode(order?.shippingInfo.state).name}, {Country.getCountryByCode(order?.shippingInfo.country).name}
+                                        {order?.shippingInfo?.address}, {order?.shippingInfo?.city}, {order?.shippingInfo?.pincode}, {State.getStateByCode(order?.shippingInfo?.state)?.name}, {Country.getCountryByCode(order?.shippingInfo?.country)?.name}
                                     </span>
                                 </div>
                             </div>
@@ -75,9 +75,12 @@ const ProcessOrder = () => {
                             </Typography>
                             <div className="orderDetailsContainerBox">
                                 <div className="">
-                                    <p className={order?.paymentInfo.status === 'succeeded' ? 'green' : 'red'}>
-                                        {order?.paymentInfo.status === 'succeeded' ? 'PAID' : 'PAYMENT SUCCESSFUL'}
+                                    <p>
+                                        Status:
                                     </p>
+                                    <span className={order?.paymentInfo?.status === 'Successful' ? 'green' : 'red'}>
+                                        {order?.paymentInfo?.status}
+                                    </span>
                                 </div>
                                 <div className="">
                                     <p>
@@ -128,40 +131,42 @@ const ProcessOrder = () => {
                                 Order Items:
                             </Typography>
                             <div className="orderDetailsItemsContainer">
-                                {order?.orderedItems.map(item => {
+                                {order?.orderedItems?.map(({ product, name, img, price, qty }) => {
                                     return (
-                                        <div className="" key={item.product}>
-                                            <img src={item.img} alt={item.name} />
-                                            <Link to={`/product/${item.product}`}>
-                                                {item.name}
+                                        <div className="" key={product}>
+                                            <img src={img} alt={name} />
+                                            <Link to={`/product/${product}`}>
+                                                {name}
                                             </Link>
                                             <span>
-                                                Rs. {item.price} X {item.qty} = <b>Rs. {item.qty * item.price}</b>
+                                                Rs. {price} X {qty} = <b>Rs. {qty * price}</b>
                                             </span>
                                         </div>
                                     )
                                 })}
                             </div>
                         </div>
-                        <form onSubmit={submitHandler} className="newProductForm" style={{ display: order?.orderStatus === 'Delivered' ? 'none' : '' }}>
-                            <h1 className='processOrderH1'>
-                                Update Order Status
-                            </h1>
-                            <div className="">
-                                <AccountTree />
-                                <select value={status} name="status" onChange={e => setStatus(e.target.value)}>
-                                    <option value="Shipped">
-                                        Shipped
-                                    </option>
-                                    <option value="Delivered">
-                                        Delivered
-                                    </option>
-                                </select>
-                            </div>
-                            <Button type='submit' disabled={loading} className='updateStatusBtn'>
-                                Update Order Status
-                            </Button>
-                        </form>
+                        {order?.paymentInfo?.status === 'Successful' &&
+                            <form onSubmit={submitHandler} className="newProductForm" style={{ display: order?.orderStatus === 'Delivered' ? 'none' : '' }}>
+                                <h1 className='processOrderH1'>
+                                    Update Order Status
+                                </h1>
+                                <div className="">
+                                    <AccountTree />
+                                    <select value={status} name="status" onChange={e => setStatus(e.target.value)}>
+                                        <option value="Shipped">
+                                            Shipped
+                                        </option>
+                                        <option value="Delivered">
+                                            Delivered
+                                        </option>
+                                    </select>
+                                </div>
+                                <Button type='submit' disabled={loading} className='updateStatusBtn'>
+                                    Update Order Status
+                                </Button>
+                            </form>
+                        }
                     </div>
                 </div>
             </>}

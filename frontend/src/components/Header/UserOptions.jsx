@@ -46,8 +46,9 @@ const UserOptions = ({ user, changeTab }) => {
         } catch (err) {
             console.log(err)
             toast.error(err?.response?.data?.msg || 'Something went wrong')
+        } finally {
+            navigate('/account')
         }
-        navigate('/')
     }
     const options = [
         {
@@ -61,8 +62,8 @@ const UserOptions = ({ user, changeTab }) => {
             fn: profile
         },
         {
-            icon: <Cart style={{ color: itemsQty.length ? '#ff6347' : 'unset' }} />,
-            name: `Cart(${itemsQty.length})`,
+            icon: <Cart style={{ color: itemsQty?.length ? '#ff6347' : 'unset' }} />,
+            name: `Cart(${itemsQty?.length})`,
             fn: cart
         },
         {
@@ -71,7 +72,7 @@ const UserOptions = ({ user, changeTab }) => {
             fn: boxToggle
         },
     ]
-    if (user.role === 'Admin') {
+    if (user?.role === 'Admin') {
         options.unshift({
             icon: <Dashboard />,
             name: 'Dashboard',
@@ -88,10 +89,10 @@ const UserOptions = ({ user, changeTab }) => {
                 open={open}
                 direction='down'
                 icon={
-                    <img src={user.chavi.url ? user.chavi.url : '/profile.png'} alt='Options' className='icon' />
+                    <img src={user?.chavi?.url ? user?.chavi?.url : '/profile.png'} alt='Options' className='icon' />
                 }
                 className='speedDial'>
-                {options.map(option => <SpeedDialAction key={option.name} icon={option.icon} tooltipTitle={option.name} onClick={option.fn} tooltipOpen={window.innerWidth <= 600} />)}
+                {options.map(({ name, icon, fn }) => <SpeedDialAction key={name} icon={icon} tooltipTitle={name} onClick={fn} tooltipOpen={window.innerWidth <= 600} />)}
             </SpeedDial>
             <Dialog aria-labelledby='simple-dialog-title' open={boxOpen} onClose={boxToggle}>
                 <DialogTitle>

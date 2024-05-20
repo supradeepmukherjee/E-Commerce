@@ -28,6 +28,12 @@ const MyOrders = () => {
             flex: .5,
         },
         {
+            field: 'payment',
+            headerName: 'Payment',
+            minWidth: 150,
+            flex: .5,
+        },
+        {
             field: 'itemsQty',
             headerName: 'Items Qty.',
             type: 'number',
@@ -62,11 +68,12 @@ const MyOrders = () => {
     const { isError, data, error, isLoading } = useGetMyOrdersQuery()
     useErrors([{ error, isError }])
     useEffect(() => {
-        if (data) setRows(data.orders.map(order => ({
-            id: order._id,
-            status: order.orderStatus,
-            itemsQty: order.orderedItems.length,
-            amt: order.amt
+        if (data) setRows(data.orders.map(({ _id, orderStatus, orderedItems, amt, paymentInfo }) => ({
+            id: _id,
+            status: orderStatus,
+            itemsQty: orderedItems.length,
+            payment: paymentInfo.status,
+            amt,
         })))
     }, [data])
     return (

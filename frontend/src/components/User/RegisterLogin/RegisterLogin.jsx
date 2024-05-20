@@ -65,7 +65,7 @@ const RegisterLogin = () => {
     getUser()
       .then(({ data }) => dispatch(userExists(data.user)))
       .catch(() => dispatch(userNotExists()))
-    navigate('/')
+    navigate('/account')
   }
   const registerSubmit = async e => {
     e.preventDefault()
@@ -83,7 +83,7 @@ const RegisterLogin = () => {
     getUser()
       .then(({ data }) => dispatch(userExists(data.user)))
       .catch(() => dispatch(userNotExists()))
-    navigate('/')
+    navigate('/account')
   }
   useEffect(() => {
     if (userRedux) navigate(redirect)

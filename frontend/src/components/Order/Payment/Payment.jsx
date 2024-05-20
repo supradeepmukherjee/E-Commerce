@@ -1,40 +1,27 @@
 /* eslint-disable array-callback-return */
-import Card from "@mui/icons-material/CreditCard"
-import Event from "@mui/icons-material/Event"
-import VPN from "@mui/icons-material/VpnKey"
-import { Typography } from '@mui/material'
-import { CardCvcElement, CardExpiryElement, CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import axios from 'axios'
-import { State } from "country-state-city"
 import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import server from "../../../constant"
 import useErrors from '../../../hooks/useErrors'
-import useMutation from "../../../hooks/useMutation"
 import { useGetItemsQuery } from '../../../redux/api/cart'
-import { useNewOrderMutation } from '../../../redux/api/order'
 import { useGetShipInfoQuery } from '../../../redux/api/user'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import CheckoutSteps from '../CheckoutSteps'
 import './Payment.css'
 
-const key = import.meta.env.VITE_STRIPE
 const Payment = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, []);
-    const stripe = useStripe()
-    const elements = useElements()
-    const navigate = useNavigate()
     const { user } = useSelector(({ auth }) => auth)
     const itemsQty = useSelector(({ auth }) => auth.user.cartItems)
     const payBtn = useRef(null)
     const { isError, isLoading, data, error } = useGetShipInfoQuery()
     const { isLoading: itemsLoading, data: itemsData, isError: itemsIsError, error: itemsError } = useGetItemsQuery()
-    const [newOrder, orderLoading] = useMutation(useNewOrderMutation)
+    const [loading, setLoading] = useState(false)
     const [shipInfo, setShipInfo] = useState({})
     const [cartItems, setCartItems] = useState([])
     let gTotal = 0
@@ -65,7 +52,7 @@ const Payment = () => {
             }
         }
     })
-    const order = {
+    const Order = {
         shippingInfo: shipInfo,
         orderedItems,
         itemsSubtotal: gTotal,
@@ -75,57 +62,41 @@ const Payment = () => {
     }
     const submitHandler = async e => {
         e.preventDefault()
+        setLoading(true)
         payBtn.current.disabled = true
-        const id = toast.loading('Processing payment. Please don\'t refresh or close the tab or press back button.')
         try {
-            const { data } = await axios.post(`${server}/payment/processpayment`,
-                { amt: Math.round(total * 100) },
+            const { data: { order } } = await axios.post(`${server}/payment/checkout`,
+                { amount: total, order: Order },
                 {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${key}`,
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
-                })
-            const clientSecret = data.clientSecret
-            if (!stripe || !elements) return
-            toast.loading('Processing payment. Please don\'t refresh or close the tab or press back button.', { id })
-            const result = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: elements.getElement(CardNumberElement),
-                    billing_details: {
-                        name: user.name,
-                        email: user.email,
-                        address: {
-                            line1: shipInfo.address,
-                            city: shipInfo.city,
-                            state: State.getStateByCode(shipInfo.state).name,
-                            country: shipInfo.country,
-                            postal_code: shipInfo.pincode
-                        }
-                    }
                 }
+            )
+            const { data: { key } } = await axios.get(`${server}/payment/key`, { withCredentials: true })
+            const rzp = new window.Razorpay({
+                key,
+                amount: order.amt,
+                currency: "INR",
+                name: "Supradeep Mukherjee",
+                description: "Payment Gateway",
+                image: "https://avatars.githubusercontent.com/u/113124882?v=4",
+                order_id: order.id,
+                callback_url: `${server}/payment/verify`,
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                    contact: Order.shippingInfo.phone
+                },
+                notes: { address: "Razorpay Corporate Office" },
+                theme: { color: "#3399cc" }
             })
-            if (result.error) {
-                payBtn.current.disabled = false
-                toast.error(result.error.message, { id })
-            } else {
-                if (result.paymentIntent.status === 'succeeded') {
-                    order.paymentInfo = {
-                        id: result.paymentIntent.id,
-                        status: result.paymentIntent.status
-                    }
-                    toast.error('Processing payment. Please don\'t refresh or close the tab or press back button.', { id })
-                    await newOrder('Placing Order', order)
-                    navigate('/success')
-                } else {
-                    toast.error('There\'s some issue while processing the payment. Please retry.', { id })
-                }
-            }
+            rzp.open()
         } catch (err) {
             console.log(err)
             payBtn.current.disabled = false
-            toast.error('Something went wrong', { id })
+            toast.error('Something went wrong')
+        } finally {
+            setLoading(false)
         }
     }
     useEffect(() => {
@@ -144,30 +115,15 @@ const Payment = () => {
                     <CheckoutSteps activeStep={1} />
                 </div>
                 <div className="payment">
-                    <form className="paymentForm" onSubmit={submitHandler}>
-                        <Typography>
-                            Card Info
-                        </Typography>
-                        <div className="">
-                            <Card />
-                            <CardNumberElement className='paymentInput' />
-                        </div>
-                        <div className="">
-                            <Event />
-                            <CardExpiryElement className='paymentInput' />
-                        </div>
-                        <div className="">
-                            <VPN />
-                            <CardCvcElement className='paymentInput' />
-                        </div>
-                        <input
-                            type="submit"
-                            value={`Pay Rs. ${total}`}
-                            ref={payBtn}
-                            disabled={orderLoading}
-                            className='paymentFormBtn'
-                        />
-                    </form>
+                    <button
+                        type="submit"
+                        ref={payBtn}
+                        disabled={loading}
+                        onClick={submitHandler}
+                        className='paymentBtn'
+                    >
+                        {loading ? 'Please Wait...' : `Pay Rs. ${total}`}
+                    </button>
                 </div>
             </>}
         </>

@@ -4,7 +4,7 @@ const sendToken = (user, statusCode, res, msg = '') => {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-        expires: new Date(Date.now() + (process.env.COOKIE_EXPIRY * 24 * 60 * 60000))
+        maxAge: 60 * 60 * 24 * 15000,
     }).json({ success: true, user, token, msg })
 }
 

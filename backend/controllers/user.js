@@ -31,7 +31,7 @@ const register = tryCatch(async (req, res) => {
             phone: '0000000000'
         }
     })
-    sendToken(user, 201, res, 'Regsitered Successfully')
+    sendToken(user, 201, res, 'Registered Successfully')
 })
 
 const login = tryCatch(async (req, res, next) => {

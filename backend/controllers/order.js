@@ -4,25 +4,6 @@ import { User } from '../models/User.js'
 import { tryCatch } from "../middlewares/error.js"
 import { ErrorHandler } from "../utils/utility.js"
 
-const newOrder = tryCatch(async (req, res, next) => {
-    const user = await User.findById(req.user._id)
-    const { shippingInfo, orderedItems, paymentInfo, itemsSubtotal, tax, shippingCharge, amt } = req.body
-    const order = await Order.create({
-        shippingInfo,
-        orderedItems,
-        paymentInfo,
-        itemsSubtotal,
-        tax,
-        shippingCharge,
-        amt,
-        paidAt: Date.now(),
-        user: req.user._id
-    })
-    user.cartItems = []
-    await user.save()
-    res.status(201).json({ success: true, order, user })
-})
-
 const singleOrder = tryCatch(async (req, res, next) => {
     const order = await Order.findById(req.params.id).populate('user', 'name email')
     if (!order) return next(new ErrorHandler(404, 'Order not Found'))
@@ -76,4 +57,4 @@ const delOrder = tryCatch(async (req, res, next) => { // admin
     res.status(200).json({ success: true, msg: "order deleted" })
 })
 
-export { allOrders, delOrder, myOrders, newOrder, singleOrder, updateOrderStatus }
+export { allOrders, delOrder, myOrders, singleOrder, updateOrderStatus }
