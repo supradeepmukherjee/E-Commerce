@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import useMutation from '../../../hooks/useMutation'
 import { useForgotPasswordMutation } from '../../../redux/api/user'
@@ -8,12 +9,15 @@ import './ForgotPassword.css'
 const ForgotPassword = () => {
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
+    const { user } = useSelector(({ auth }) => auth)
     const [forgotPassword, loading] = useMutation(useForgotPasswordMutation)
-    const formSubmit = async e => {
+    const formSubmit = e => {
         e.preventDefault()
-        await forgotPassword('Sending Password Link to Registered Email ID', email)
-        navigate('/registerlogin')
+        forgotPassword('Sending Password Link to Registered Email ID', email)
     }
+    useEffect(() => {
+        if (user) return navigate('/')
+    }, [navigate, user])
     return (
         <>
             <MetaData title={'ECOMMERCE'} />

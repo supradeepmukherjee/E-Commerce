@@ -11,7 +11,6 @@ import { useAddToCartMutation } from '../../../redux/api/cart'
 import { useLazyProductDetailsQuery, useProductDetailsQuery, useSubmitReviewMutation } from '../../../redux/api/product'
 import { useLazyGetUserQuery } from "../../../redux/api/user"
 import { userExists, userNotExists } from "../../../redux/reducers/auth"
-import Error404 from '../../Error404/Error404'
 import Loader from '../../Loader/Loader'
 import MetaData from '../../MetaData'
 import ReviewCard from '../Review/ReviewCard'
@@ -54,7 +53,7 @@ const ProductDetails = () => {
   }, [data])
   return (
     isLoading ? <Loader /> :
-      (product ? <>
+      <>
         <div className="productDetails">
           <MetaData title={product?.name} />
           <div className="">
@@ -135,18 +134,18 @@ const ProductDetails = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        {product?.reviews?.length > 0 ? (
-          <div className="reviews">
-            {product?.reviews.map(review => <ReviewCard key={review._id} review={review} role={user?.role} userID={user?._id} productID={id} refetch={refetch} />)}
-          </div>
-        ) : (
-          <p className="noReviews">
-            No Reviews Yet
-          </p>
-        )}
+        {
+          product?.reviews?.length > 0 ? (
+            <div className="reviews">
+              {product?.reviews.map(review => <ReviewCard key={review._id} review={review} role={user?.role} userID={user?._id} productID={id} refetch={refetch} />)}
+            </div>
+          ) : (
+            <p className="noReviews">
+              No Reviews Yet
+            </p>
+          )
+        }
       </>
-        :
-        <Error404 text='Product' />)
   )
 }
 

@@ -8,6 +8,7 @@ import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 import Loader from "./components/Loader/Loader";
 import Payment from './components/Order/Payment/Payment';
+import Protect from './components/Protect';
 import { useLazyGetUserQuery } from "./redux/api/user";
 import { userExists, userNotExists } from './redux/reducers/auth';
 const RegisterLogin = lazy(() => import('./components/User/RegisterLogin/RegisterLogin'));
@@ -71,27 +72,31 @@ function App() {
           <Route exact path='/contact' element={<Contact />} />
           <Route exact path='/products/:keyword' element={<Products />} />
           <Route exact path='/registerlogin' element={<RegisterLogin />} />
-          <Route exact path='/account' element={user ? <Profile /> : <RegisterLogin />} />
-          <Route exact path='/updateprofile' element={user ? <UpdateProfile /> : <RegisterLogin />} />
-          <Route exact path='/updatepassword' element={user ? <ChangePassword /> : <RegisterLogin />} />
-          <Route exact path='/forgotpassword' element={user ? <Profile /> : <ForgotPassword />} />
-          <Route exact path='/resetpassword/:token' element={user ? <Profile /> : <ResetPassword />} />
-          <Route exact path='/cart' element={user ? <Cart /> : <RegisterLogin />} />
-          <Route exact path='/shipping' element={user ? <Shipping /> : <RegisterLogin />} />
-          <Route exact path='/confirmorder' element={user ? <ConfirmOrder /> : <RegisterLogin />} />
-          <Route exact path='/pay' element={user ? <Payment /> : <RegisterLogin />} />
-          <Route exact path='/success' element={user ? <Success /> : <RegisterLogin />} />
-          <Route exact path='/myorders' element={user ? <Orders /> : <RegisterLogin />} />
-          <Route exact path='/order/:id' element={user ? <OrderDetails /> : <RegisterLogin />} />
-          <Route exact path='/dashboard' element={isAdmin ? <Dashboard /> : <RegisterLogin />} />
-          <Route exact path='/adminproducts' element={isAdmin ? <ProductList /> : <RegisterLogin />} />
-          <Route exact path='/adminorders' element={isAdmin ? <OrderList /> : <RegisterLogin />} />
-          <Route exact path='/adminusers' element={isAdmin ? <UserList /> : <RegisterLogin />} />
-          <Route exact path='/adminproduct' element={isAdmin ? <NewProduct /> : <RegisterLogin />} />
-          <Route exact path='/adminproduct/:id' element={isAdmin ? <EditProduct /> : <RegisterLogin />} />
-          <Route exact path='/adminorder/:id' element={isAdmin ? <ProcessOrder /> : <RegisterLogin />} />
-          <Route exact path='/adminuser/:id' element={isAdmin ? <UpdateRole /> : <RegisterLogin />} />
-          <Route path='*' element={window.location.pathname === '/pay' ? null : <Error404 text='Page' />} />
+          <Route exact path='/forgotpassword' element={<ForgotPassword />} />
+          <Route exact path='/resetpassword/:token' element={<ResetPassword />} />
+          <Route element={<Protect user={user} />}>
+            <Route exact path='/account' element={<Profile />} />
+            <Route exact path='/updateprofile' element={<UpdateProfile />} />
+            <Route exact path='/updatepassword' element={<ChangePassword />} />
+            <Route exact path='/cart' element={<Cart />} />
+            <Route exact path='/shipping' element={<Shipping />} />
+            <Route exact path='/confirmorder' element={<ConfirmOrder />} />
+            <Route exact path='/pay' element={<Payment />} />
+            <Route exact path='/success' element={<Success />} />
+            <Route exact path='/myorders' element={<Orders />} />
+            <Route exact path='/order/:id' element={<OrderDetails />} />
+          </Route>
+          <Route element={<Protect admin={true} isAdmin={isAdmin} />}>
+            <Route exact path='/dashboard' element={<Dashboard />} />
+            <Route exact path='/adminproducts' element={<ProductList />} />
+            <Route exact path='/adminorders' element={<OrderList />} />
+            <Route exact path='/adminusers' element={<UserList />} />
+            <Route exact path='/adminproduct' element={<NewProduct />} />
+            <Route exact path='/adminproduct/:id' element={<EditProduct />} />
+            <Route exact path='/adminorder/:id' element={<ProcessOrder />} />
+            <Route exact path='/adminuser/:id' element={<UpdateRole />} />
+          </Route>
+          <Route path='*' element={window.location.pathname === '/pay' ? null : <Error404 />} />
         </Routes>
       </Suspense>
       <Footer />

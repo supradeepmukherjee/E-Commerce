@@ -6,24 +6,6 @@ const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: `${server}/user` }),
     tagTypes: ['user', 'admin-user'],
     endpoints: ({ mutation, query }) => ({
-        register: mutation({
-            query: data => ({
-                url: `/register`,
-                method: `POST`,
-                body: data,//file
-                credentials: 'include'
-            }),
-            invalidatesTags: ['user']
-        }),
-        login: mutation({
-            query: ({ email, password }) => ({
-                url: `/login`,
-                method: `POST`,
-                body: { email, password },
-                credentials: 'include'
-            }),
-            invalidatesTags: ['user']
-        }),
         getUser: query({
             query: () => ({
                 url: '/me',
@@ -108,4 +90,4 @@ const api = createApi({
 })
 
 export default api
-export const { useAllUsersQuery, useChangePasswordMutation, useForgotPasswordMutation, useGetShipInfoQuery, useGetUserProfileQuery, useGetUserQuery, useLoginMutation, useRegisterMutation, useResetPasswordMutation, useUpdateProfileMutation, useUpdateRoleMutation, useUpdateShipMutation, useLazyGetUserQuery } = api
+export const { useAllUsersQuery, useChangePasswordMutation, useForgotPasswordMutation, useGetShipInfoQuery, useGetUserProfileQuery, useGetUserQuery, useResetPasswordMutation, useUpdateProfileMutation, useUpdateRoleMutation, useUpdateShipMutation, useLazyGetUserQuery } = api

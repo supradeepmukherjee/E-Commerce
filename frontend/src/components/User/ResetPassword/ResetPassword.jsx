@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useMutation from '../../../hooks/useMutation'
 import { useResetPasswordMutation } from '../../../redux/api/user'
@@ -10,6 +11,7 @@ import './ResetPassword.css'
 const ResetPassword = () => {
     const [pass, setPass] = useState('')
     const [cpass, setcPass] = useState('')
+    const { user } = useSelector(({ auth }) => auth)
     const { token } = useParams()
     const [resetPassword, loading] = useMutation(useResetPasswordMutation)
     const navigate = useNavigate()
@@ -23,6 +25,9 @@ const ResetPassword = () => {
         await resetPassword('Resetting Password', { token, password: pass })
         navigate('/registerlogin')
     }
+    useEffect(() => {
+        if (user) return navigate('/')
+    }, [navigate, user])
     return (
         <>
             <MetaData title={'RESET PASSWORD'} />
