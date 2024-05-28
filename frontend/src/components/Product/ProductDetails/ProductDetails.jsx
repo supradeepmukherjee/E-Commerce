@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import Rating from '@mui/material/Rating'
 import { useEffect, useState } from 'react'
+import toast from "react-hot-toast"
 import { useDispatch, useSelector } from 'react-redux'
 import { Carousel } from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
@@ -26,6 +27,7 @@ const ProductDetails = () => {
   const [comment, setComment] = useState('')
   const [value, setValue] = useState(1)
   const [product, setProduct] = useState({})
+  const [productRating, setProductRating] = useState(0)
   const { user } = useSelector(({ auth }) => auth)
   const [getUser] = useLazyGetUserQuery()
   const [productDetails] = useLazyProductDetailsQuery()
@@ -33,6 +35,7 @@ const ProductDetails = () => {
   const [addToCart, loading] = useMutation(useAddToCartMutation)
   const [submitReview, reviewLoading] = useMutation(useSubmitReviewMutation)
   const addCartHandler = async () => {
+    if (!user) return toast.error('Please Login First')
     await addToCart('Adding to Cart', { id: product?._id, qty: value })
     getUser()
       .then(({ data }) => dispatch(userExists(data.user)))
@@ -41,6 +44,10 @@ const ProductDetails = () => {
   const reviewToggle = () => open ? setOpen(false) : setOpen(true)
   const submitHandler = async () => {
     reviewToggle()
+    if (!user) return toast.error('Please Login First')
+    if (!user.productsDelivered.includes(id.toString())) return toast.error('You can only review a product which you have bought')
+    if (comment === '') return toast.error('Review can\'t be empty')
+    if (rating === 0) return toast.error('Please give the Star Rating to the product')
     await submitReview('Adding Review', { productID: id, rating, comment })
     productDetails(id)
       .then(({ data }) => setProduct(data.product))
@@ -49,7 +56,10 @@ const ProductDetails = () => {
   const { data, isLoading, error, isError, refetch } = useProductDetailsQuery(id)
   useErrors([{ error, isError }])
   useEffect(() => {
-    if (data) setProduct(data.product)
+    if (data) {
+      setProduct(data.product)
+      setProductRating(data.product.rating)
+    }
   }, [data])
   return (
     isLoading ? <Loader /> :
@@ -77,7 +87,7 @@ const ProductDetails = () => {
               </p>
             </div>
             <div className="detailsBlock2">
-              <Rating size={window.innerWidth > 600 ? 'large' : 'small'} value={product && product?.rating} precision={0.5} readOnly /> <span className='detailsBlock2span'>({product?.numOfReviews} reviews)</span>
+              <Rating size={window.innerWidth > 600 ? 'large' : 'small'} value={productRating} precision={0.5} readOnly /> <span className='detailsBlock2span'>({product?.numOfReviews} reviews)</span>
             </div>
             <div className="detailsBlock3">
               <h1>
@@ -122,7 +132,7 @@ const ProductDetails = () => {
             Submit Review
           </DialogTitle>
           <DialogContent className='reviewBox'>
-            <Rating value={rating} onChange={e => setRating(e.target.value)} size='large' />
+            <Rating value={rating} onChange={e => setRating(Number(e.target.value))} size='large' />
             <textarea name="" id="" cols="30" rows="5" className='reviewText' value={comment} onChange={e => setComment(e.target.value)}></textarea>
           </DialogContent>
           <DialogActions>
