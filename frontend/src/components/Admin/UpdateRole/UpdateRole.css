@@ -19,6 +19,11 @@
 .updateRoleForm>button {
     margin: 1vmax;
 }
+
+.profileAdminDetails{
+    gap: 4vh;
+}
+
 @media screen and (max-width:600px) {
     .updateRoleForm {
         width: 50vw;

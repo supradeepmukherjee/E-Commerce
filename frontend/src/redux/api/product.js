@@ -4,7 +4,7 @@ import server from '../../constant'
 const api = createApi({
     reducerPath: 'product',
     baseQuery: fetchBaseQuery({ baseUrl: `${server}/product` }),
-    tagTypes: ['product', 'admin-product', 'review'],
+    tagTypes: ['product'],
     endpoints: ({ mutation, query }) => ({
         newProduct: mutation({
             query: product => ({
@@ -13,7 +13,7 @@ const api = createApi({
                 body: product, //file
                 credentials: 'include'
             }),
-            invalidatesTags: ['order', 'admin-order']
+            invalidatesTags: ['product']
         }),
         delProduct: mutation({
             query: id => ({
@@ -21,7 +21,7 @@ const api = createApi({
                 method: `DELETE`,
                 credentials: 'include'
             }),
-            invalidatesTags: ['admin-product', 'product']
+            invalidatesTags: ['product']
         }),
         delReview: mutation({
             query: ({ id, productID }) => ({
@@ -29,7 +29,6 @@ const api = createApi({
                 method: `DELETE`,
                 credentials: 'include'
             }),
-            invalidatesTags: ['product']
         }),
         getProducts: query({
             query: ({ keyword = '', currentPg = 1, price = [0, 100000], category, rating = 0 }) => {
@@ -40,7 +39,6 @@ const api = createApi({
                     credentials: 'include'
                 }
             },
-            providesTags: ['product']
         }),
         editProduct: mutation({
             query: ({ id, data }) => ({
@@ -49,21 +47,20 @@ const api = createApi({
                 body: data,//file
                 credentials: 'include'
             }),
-            invalidatesTags: ['admin-product', 'product']
+            invalidatesTags: ['product']
         }),
         productDetails: query({
             query: id => ({
                 url: `/product/${id}`,
                 credentials: 'include'
             }),
-            providesTags: ['product']
         }),
         getMyProducts: query({
             query: () => ({
                 url: `/admin/products`,
                 credentials: 'include'
             }),
-            providesTags: ['admin-product']
+            providesTags: ['product']
         }),
         submitReview: mutation({
             query: ({ productID, rating, comment }) => ({
@@ -72,7 +69,6 @@ const api = createApi({
                 body: { productID, rating, comment },
                 credentials: 'include'
             }),
-            invalidatesTags: ['product']
         }),
     })
 })

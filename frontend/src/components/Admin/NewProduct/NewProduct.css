@@ -150,3 +150,9 @@
         padding: 1.8vmax;
     }
 }
+
+@media screen and (min-width:600px) {
+    .newProductContainer {
+        margin-top: 50px;
+    }
+}

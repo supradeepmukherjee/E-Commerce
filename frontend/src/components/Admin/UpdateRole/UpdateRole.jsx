@@ -37,9 +37,9 @@ const UpdateRole = () => {
                     <SideBar />
                     <div className="profile profileAdmin">
                         <div className="">
-                            <img src={user?.chavi.url} alt={user?.name} />
+                            <img src={user?.chavi?.url} alt={user?.name} />
                         </div>
-                        <div className="">
+                        <div className="profileAdminDetails">
                             <div className="">
                                 <h4>
                                     Full Name
@@ -82,7 +82,7 @@ const UpdateRole = () => {
                                 <Button type='submit' disabled={loading} className='updateStatusBtn'>
                                     Update User Role
                                 </Button>
-                            </form>
+                            </form> 
                         </div>
                     </div>
                 </div>

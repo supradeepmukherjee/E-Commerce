@@ -44,8 +44,15 @@
 .MuiDataGrid-columnHeader div {
     color: #fff;
 }
+
 @media screen and (max-width:600px) {
-    .productListTable a{
+    .productListTable a {
         font: 300 4vw 'Roboto';
+    }
+}
+
+@media screen and (min-width:600px) {
+    .productListContainer {
+        margin-top: 50px;
     }
 }
